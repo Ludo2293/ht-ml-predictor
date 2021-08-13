@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>HT-ML Predictor</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+		<noscript><link rel="stylesheet" type="text/css" href="static/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#intro">Welcome</a></li>
+							<li><a href="#one">Match predictor</a></li>
+							<li><a href="#two">League predictor</a></li>
+							<li><a href="#three">Methodology</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>HT-ML Predictor</h1>
+							<p>Have you been lucky or not ? This tool can answer your question by estimating
+							the probabilities to win of each team in a Hattrick match already played. The probabilities are calculated with a Machine Learning algorithm, trained with all the matchs played
+								in the world in seasons 76 and 77.</p>
+							<ul class="actions">
+								<li><a href="#one" class="button scrolly">Let's go !</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- One -->
+					<section id="one" class="wrapper style2 spotlights">
+						<section>
+							<a href="#" class="image"><img src="static/images/ballon_but.jpg" alt="" data-position="center center" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Match Predictor</h2>
+									<p>Enter your match ID and discover what were the most probable results !</p>
+
+									<form action="{{ url_for('html_predict')}}" method="POST">
+	    								Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID'/><br>
+									<button type="submit" class="btn btn-primary">Calculate</button><br>
+									</form>
+				
+									{% for table in tables %}
+        		    							{{titles[loop.index]}}
+            									{{ table|safe }}
+									{% endfor %}
+								</div>
+							</div>
+						</section>
+					</section>
+					<section id="two" class="wrapper style2 spotlights">
+						<section>
+							<a href="#" class="image"><img src="static/images/coupe.jpg" alt="" data-position="top center" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>League Predictor</h2>
+									<p>Simulate all the matchs of your league, for the current season or for previouses. Along the season, who was lucky and who was not ?
+									The calculation time is around 20 seconds.</p>
+									<form action="{{ url_for('html_predict_league')}}" method="POST">
+	    									Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' /><br>
+	    									Enter the season number : <input type='text' name='Season' placeholder='Season'/><br>
+										<button type="submit" class="btn btn-primary">Calculate</button>
+									</form>
+								</div>
+							</div>
+						</section>
+					</section>
+
+				<!-- Two -->
+					<section id="three" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>Methodology</h2>
+							<p>This tool is based on a Machine Learning algorithm "Light GBM". It has been trained and 
+							tested on a database including the data of more than 2 million matches all around the world on seasons 76 and 77.</p>
+							
+							<p>The algorithm estimates the "Expected goals" scored by a team, depending on some features listed below. The "Expected goals" is the average number of goals
+							that would be observed if the match is replayed a lot of times.
+							The probabilities of the results (home win, away win and draw) are deducted from the values of the expected goals, applying a standard distribution
+							with expected goals as esperance and 1 as standard deviation.<p/>
+							
+							<p>The following features are used for the predictions :<br>
+							- Final match ratings for the team and its opponent. If one of the teams won with a goal difference higher to 1, the final match ratings are simulated without defensive bonus and offensive malus<br>
+							- Tactic types and skills are taken into account for both teams. It is efficient for long shots tactic too. </p>
+							
+							<p>Specialities of players following their position on the field have been used in a first version. There are not in the final version, because the predictions
+							are more accurate without this feature. It absolutely doesn't mean that specialities are useless, but their impact 
+							on the expected goals is very dependant on the skills of the players, and it is impossible to get this information.</p>
+							
+							<p>Special thanks to Nickarana for sharing his huge database, and to Jean-Mi for the very useful Python framework pyCHPP !</p>
+							
+							<p>If you have any question or suggestion about this website, don't hesitate to contact Ludo2293 by HT-mail or in the dedicated post on Hattrick forum.</p>
+														
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="static/js/jquery.min.js"></script>
+			<script src="static/js/jquery.scrollex.min.js"></script>
+			<script src="static/js/jquery.scrolly.min.js"></script>
+			<script src="static/js/browser.min.js"></script>
+			<script src="static/js/breakpoints.min.js"></script>
+			<script src="static/js/util.js"></script>
+			<script src="static/js/main.js"></script>
+
+	</body>
+</html>

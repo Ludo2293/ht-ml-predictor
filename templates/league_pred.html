@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>HT-ML Predictor - Match prediction</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+		<noscript><link rel="stylesheet" type="text/css" href="static/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Header -->
+			<header id="header">
+				<a href="templates/index.html" class="title">HT-ML Predictor</a>
+				<nav>
+					<ul>
+						<li><a href="/">Home</a></li>
+					</ul>
+				</nav>
+			</header>
+
+			<div>
+				<form action="{{ url_for('html_predict_league')}}" method="POST">
+	    				Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' /><br>
+	    				Enter the season number : <input type='text' name='Season' placeholder='Season'/><br>
+					<button type="submit" class="btn btn-primary">Calculate</button>
+				</form>
+
+				<p>For each match, the Expected points is calculated for both teams with this formula : <I>3*Probability to win + 1*Probability of draw</I>. 
+				In the following simulated rankings, the Expected Points is the sum of the Expected points calculated for all season matchs.
+				If the Points difference is positive, the team can be considered as lucky, especially if it is higher than 3. If it is negative, the team can be considered as unlucky</p>
+
+				{% for table in tables %}
+					<b>{{ titles[loop.index-1]|safe }}</b>
+					<br>
+					<br>
+            				{{ table|safe }}
+				{% endfor %}
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; HT-ML Predictor. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="static/js/jquery.min.js"></script>
+			<script src="static/js/jquery.scrollex.min.js"></script>
+			<script src="static/js/jquery.scrolly.min.js"></script>
+			<script src="static/js/browser.min.js"></script>
+			<script src="static/js/breakpoints.min.js"></script>
+			<script src="static/js/util.js"></script>
+			<script src="static/js/main.js"></script>
+
+		
+	</body>
+</html>

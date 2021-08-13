@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>HT-ML Predictor - Match prediction</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+		<noscript><link rel="stylesheet" type="text/css" href="static/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Header -->
+			<header id="header">
+				<a href="templates/index.html" class="title">HT-ML Predictor</a>
+				<nav>
+					<ul>
+						<li><a href="javascript:history.back()">Home</a></li>
+					</ul>
+				</nav>
+			</header>
+
+			<div>
+				<form action="{{ url_for('html_predict')}}" method="POST">
+	    				Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID'/><br>
+					<button type="submit" class="btn btn-primary">Calculate</button>
+				</form>
+				<p><I>You can find below the expected goals estimated and the probabilites of the different results.
+				If the result is "surprising" (a team with at least 50% probability to win did not win), it is highlighted in yellow.</I></p>
+
+				{% for table in tables %}
+        		    		{{titles[loop.index]}}
+            				{{ table|safe }}
+				{% endfor %}
+			</div>
+
+		<!-- Scripts -->
+			<script src="static/js/jquery.min.js"></script>
+			<script src="static/js/jquery.scrollex.min.js"></script>
+			<script src="static/js/jquery.scrolly.min.js"></script>
+			<script src="static/js/browser.min.js"></script>
+			<script src="static/js/breakpoints.min.js"></script>
+			<script src="static/js/util.js"></script>
+			<script src="static/js/main.js"></script>
+
+		
+	</body>
+</html>
