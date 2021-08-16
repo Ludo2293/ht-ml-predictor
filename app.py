@@ -5,7 +5,6 @@ from scipy.stats import norm
 from joblib import load
 from flask import Flask, request,  render_template
 import os
-#from boto.s3.connection import S3Connection
 
 # Connexion à l'API Hattrick
 chpp = CHPP(os.getenv('consumer_key'),
@@ -159,7 +158,7 @@ def html_predict():
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
         if num_saison==int(chpp.league_fixtures(ht_id=id_league).season):
-            nb_matchs=4*int(chpp.league(ht_id=id_league).current_match_round)-4
+            nb_matchs=min(4*int(chpp.league(ht_id=id_league).current_match_round)-4,56)
         else:
             nb_matchs=56
         liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.league_fixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
