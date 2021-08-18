@@ -63,12 +63,7 @@ def html_predict():
             .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/max(1,(match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
             .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/max(1,(match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
             .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/max(1,(match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
-            .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/max(1,(match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
-            .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/max(1,(match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
-            .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/max(1,(match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
             .92*match.home_team_rating_ind_set_pieces_att**3.5/max(1,match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
-            .92*match.away_team_rating_ind_set_pieces_att**3.5/max(1,match.away_team_rating_ind_set_pieces_att**3.5+match.home_team_rating_ind_set_pieces_def**3.5),
-            0,
             1*(match.home_team_tactic_type=='1')*match.home_team_tactic_skill,
             1*(match.home_team_tactic_type=='2')*match.home_team_tactic_skill,
             1*(match.home_team_tactic_type=='3')*match.home_team_tactic_skill,
@@ -76,9 +71,6 @@ def html_predict():
             1*(match.home_team_tactic_type=='7')*match.home_team_tactic_skill,
             1*(match.home_team_tactic_type=='8')*match.home_team_tactic_skill,
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,
-            1*(match.away_team_tactic_type=='2')*match.away_team_tactic_skill,
-            1*(match.away_team_tactic_type=='3')*match.away_team_tactic_skill,
-            1*(match.away_team_tactic_type=='4')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill])
         # Extérieur
         liste_attr.append([id_init,match.away_team_name,match.away_team_goals,0,
@@ -86,12 +78,7 @@ def html_predict():
             .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/max(1,(match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
             .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/max(1,(match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
             .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/max(1,(match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
-            .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/max(1,(match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
-            .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/max(1,(match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
-            .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/max(1,(match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
             .92*match.away_team_rating_ind_set_pieces_att**3.5/max(1,match.away_team_rating_ind_set_pieces_att**3.5+match.home_team_rating_ind_set_pieces_def**3.5),
-            .92*match.home_team_rating_ind_set_pieces_att**3.5/max(1,match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
-            0,
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='2')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='3')*match.away_team_tactic_skill,
@@ -99,9 +86,6 @@ def html_predict():
             1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='8')*match.away_team_tactic_skill,
             1*(match.home_team_tactic_type=='1')*match.home_team_tactic_skill,
-            1*(match.home_team_tactic_type=='2')*match.home_team_tactic_skill,
-            1*(match.home_team_tactic_type=='3')*match.home_team_tactic_skill,
-            1*(match.home_team_tactic_type=='4')*match.home_team_tactic_skill,
             1*(match.home_team_tactic_type=='7')*match.home_team_tactic_skill]) 
         tab_poule=pd.DataFrame(liste_attr,columns=colonnes)
         
@@ -204,31 +188,24 @@ def html_predict_league():
             pd.DataFrame(.92*(home_team_rating_right_att)**3.5/(home_team_rating_right_att**3.5+(away_team_rating_left_def)**3.5)),
             pd.DataFrame(.92*(home_team_rating_left_att)**3.5/(home_team_rating_left_att**3.5+(away_team_rating_right_def)**3.5)),
             pd.DataFrame(.92*(home_team_rating_mid_att)**3.5/(home_team_rating_mid_att**3.5+(away_team_rating_mid_def)**3.5)),
-            pd.DataFrame(.92*(away_team_rating_right_att)**3.5/(away_team_rating_right_att**3.5+(home_team_rating_left_def)**3.5)),
-            pd.DataFrame(.92*(away_team_rating_left_att)**3.5/(away_team_rating_left_att**3.5+(home_team_rating_right_def)**3.5)),
-            pd.DataFrame(.92*(away_team_rating_mid_att)**3.5/(away_team_rating_mid_att**3.5+(home_team_rating_mid_def)**3.5)),
             pd.DataFrame(.92*home_team_rating_ind_set_pieces_att**3.5/(home_team_rating_ind_set_pieces_att**3.5+away_team_rating_ind_set_pieces_def**3.5)),
-            pd.DataFrame(.92*away_team_rating_ind_set_pieces_att**3.5/(away_team_rating_ind_set_pieces_att**3.5+home_team_rating_ind_set_pieces_def**3.5)),
             pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_2),pd.DataFrame(home_team_tactic_skill_3),
             pd.DataFrame(home_team_tactic_skill_4),pd.DataFrame(home_team_tactic_skill_7),pd.DataFrame(home_team_tactic_skill_8),
-            pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_2),pd.DataFrame(away_team_tactic_skill_3),
-            pd.DataFrame(away_team_tactic_skill_4),pd.DataFrame(away_team_tactic_skill_7)],axis=1),
+            pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_7)],axis=1),
             num_iteration=reglog_mod.best_iteration_),decimals=2)
-                
+        # A restester avec cette commande en plus - On définit une prévision "plancher" à 0.1
+        xG_dom[xG_dom<.1]=.1
+        
         xG_ext=(home_team_rating_midfield==1)*(diff_buts==-5)*5+(home_team_rating_midfield>1)*np.around(reglog_mod.predict(pd.concat([pd.DataFrame(away_team_rating_midfield**3/(away_team_rating_midfield**3+home_team_rating_midfield**3)),
             pd.DataFrame(.92*(away_team_rating_right_att)**3.5/(away_team_rating_right_att**3.5+(home_team_rating_left_def)**3.5)),
             pd.DataFrame(.92*(away_team_rating_left_att)**3.5/(away_team_rating_left_att**3.5+(home_team_rating_right_def)**3.5)),
             pd.DataFrame(.92*(away_team_rating_mid_att)**3.5/(away_team_rating_mid_att**3.5+(home_team_rating_mid_def)**3.5)),
-            pd.DataFrame(.92*(home_team_rating_right_att)**3.5/(home_team_rating_right_att**3.5+(away_team_rating_left_def)**3.5)),
-            pd.DataFrame(.92*(home_team_rating_left_att)**3.5/(home_team_rating_left_att**3.5+(away_team_rating_right_def)**3.5)),
-            pd.DataFrame(.92*(home_team_rating_mid_att)**3.5/(home_team_rating_mid_att**3.5+(away_team_rating_mid_def)**3.5)),
             pd.DataFrame(.92*away_team_rating_ind_set_pieces_att**3.5/(away_team_rating_ind_set_pieces_att**3.5+home_team_rating_ind_set_pieces_def**3.5)),
-            pd.DataFrame(.92*home_team_rating_ind_set_pieces_att**3.5/(home_team_rating_ind_set_pieces_att**3.5+away_team_rating_ind_set_pieces_def**3.5)),
             pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_2),pd.DataFrame(away_team_tactic_skill_3),
             pd.DataFrame(away_team_tactic_skill_4),pd.DataFrame(away_team_tactic_skill_7),pd.DataFrame(away_team_tactic_skill_8),
-            pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_2),pd.DataFrame(home_team_tactic_skill_3),
-            pd.DataFrame(home_team_tactic_skill_4),pd.DataFrame(home_team_tactic_skill_7)],axis=1),
+            pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_7)],axis=1),
             num_iteration=reglog_mod.best_iteration_),decimals=2)
+        xG_ext[xG_ext<.1]=.1
         
         
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win','Xpts Home','Xpts Away','Rpts Home','Rpts Away'])
