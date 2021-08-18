@@ -76,19 +76,19 @@ def html_predict():
         
         # Calcul des probabilités de victoire
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win'])
-        Tab_probas=pd.DataFrame(columns=range(0,11))
+        Tab_probas=pd.DataFrame(columns=range(0,21))
         Tab_probas.loc[0,0]=norm.cdf(0.5,xG_dom,1.2)*norm.cdf(0.5,xG_ext,1.2)
-        for l in range(1,11):
+        for l in range(1,21):
             Tab_probas.loc[0,l]=norm.cdf(0.5,xG_dom,1.2)*(norm.cdf(l+0.5,xG_ext,1.2)-norm.cdf(l-0.5,xG_ext,1.2))
-            for k in range(1,11):
+            for k in range(1,21):
                 Tab_probas.loc[k,l]=(norm.cdf(k+0.5,xG_dom,1.2)-norm.cdf(k-0.5,xG_dom,1.2))*(norm.cdf(l+0.5,xG_ext,1.2)-norm.cdf(l-0.5,xG_ext,1.2))
-        for k in range(1,11):
+        for k in range(1,21):
             Tab_probas.loc[k,0]=(norm.cdf(k+0.5,xG_dom,1.2)-norm.cdf(k-0.5,xG_dom,1.2))*norm.cdf(0.5,xG_ext,1.2)
         Proba1=0
         ProbaN=0
         Proba2=0
-        for k in range(0,11):
-            for l in range(0,11):
+        for k in range(0,21):
+            for l in range(0,21):
                 if k>l:
                     Proba1=Proba1+Tab_probas.loc[k,l]
                 elif k<l:
@@ -183,20 +183,20 @@ def html_predict_league():
         
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win','Xpts Home','Xpts Away','Rpts Home','Rpts Away'])
         for i in range(0,nb_matchs):
-            Tab_probas=pd.DataFrame(columns=range(0,11))
+            Tab_probas=pd.DataFrame(columns=range(0,21))
             Tab_probas.loc[0,0]=norm.cdf(0.5,xG_dom[i],1)*norm.cdf(0.5,xG_ext[i],1)
-            for l in range(1,11):
+            for l in range(1,21):
                 Tab_probas.loc[0,l]=norm.cdf(0.5,xG_dom[i],1)*(norm.cdf(l+0.5,xG_ext[i],1)-norm.cdf(l-0.5,xG_ext[i],1))
-                for k in range(1,11):
+                for k in range(1,21):
                     Tab_probas.loc[k,l]=(norm.cdf(k+0.5,xG_dom[i],1)-norm.cdf(k-0.5,xG_dom[i],1))*(norm.cdf(l+0.5,xG_ext[i],1)
                                         -norm.cdf(l-0.5,xG_ext[i],1))
-            for k in range(1,11):
+            for k in range(1,21):
                 Tab_probas.loc[k,0]=(norm.cdf(k+0.5,xG_dom[i],1)-norm.cdf(k-0.5,xG_dom[i],1))*norm.cdf(0.5,xG_ext[i],1)
             Proba1=0
             ProbaN=0
             Proba2=0
-            for k in range(0,11):
-                for l in range(0,11):
+            for k in range(0,21):
+                for l in range(0,21):
                     if k>l:
                         Proba1=Proba1+Tab_probas.loc[k,l]
                     elif k<l:
