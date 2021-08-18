@@ -193,8 +193,8 @@ def html_predict_league():
             pd.DataFrame(home_team_tactic_skill_4),pd.DataFrame(home_team_tactic_skill_7),pd.DataFrame(home_team_tactic_skill_8),
             pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_7)],axis=1),
             num_iteration=reglog_mod.best_iteration_),decimals=2)
-        # A restester avec cette commande en plus - On définit une prévision "plancher" à 0.1
-        xG_dom[xG_dom<.1]=.1
+        # On définit une prévision "plancher" à 0.1 (hors cas de forfait)
+        xG_dom[(xG_dom<.1) & (home_team_rating_midfield!=1)]=.1
         
         xG_ext=(home_team_rating_midfield==1)*(diff_buts==-5)*5+(home_team_rating_midfield>1)*np.around(reglog_mod.predict(pd.concat([pd.DataFrame(away_team_rating_midfield**3/(away_team_rating_midfield**3+home_team_rating_midfield**3)),
             pd.DataFrame(.92*(away_team_rating_right_att)**3.5/(away_team_rating_right_att**3.5+(home_team_rating_left_def)**3.5)),
@@ -205,7 +205,7 @@ def html_predict_league():
             pd.DataFrame(away_team_tactic_skill_4),pd.DataFrame(away_team_tactic_skill_7),pd.DataFrame(away_team_tactic_skill_8),
             pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_7)],axis=1),
             num_iteration=reglog_mod.best_iteration_),decimals=2)
-        xG_ext[xG_ext<.1]=.1
+        xG_ext[(xG_ext<.1) & (away_team_rating_midfield!=1)]=.1
         
         
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win','Xpts Home','Xpts Away','Rpts Home','Rpts Away'])
