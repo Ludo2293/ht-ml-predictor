@@ -80,7 +80,7 @@ def html_predict():
             num_iteration=reglog_mod.best_iteration_))
         
         # Calcul des probabilités de victoire
-        Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win','Xpts Home','Xpts Away','Rpts Home','Rpts Away'])
+        Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win'])
         Tab_probas=pd.DataFrame(columns=range(0,11))
         Tab_probas.loc[0,0]=norm.cdf(0.5,xG_dom,1)*norm.cdf(0.5,xG_ext,1)
         for l in range(1,11):
