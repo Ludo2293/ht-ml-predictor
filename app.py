@@ -67,7 +67,7 @@ def html_predict():
         xG_ext=(match.away_team_rating_midfield==1)*(diff_buts==-5)*5+(match.away_team_rating_midfield>1)*max(0.1,reglog_mod.predict([[match.away_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
             .92*match.away_team_rating_right_att**3.5/(match.home_team_rating_right_att**3.5+match.away_team_rating_left_def**3.5),
             .92*match.away_team_rating_left_att**3.5/(match.home_team_rating_left_att**3.5+match.away_team_rating_right_def**3.5),
-            .92*match.away_home_team_rating_mid_att**3.5/(match.home_team_rating_mid_att**3.5+match.away_team_rating_mid_def**3.5),
+            .92*match.away_team_rating_mid_att**3.5/(match.home_team_rating_mid_att**3.5+match.away_team_rating_mid_def**3.5),
             .92*match.away_team_rating_ind_set_pieces_att**3.5/(match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='2')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='3')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='4')*match.away_team_tactic_skill,
@@ -95,10 +95,8 @@ def html_predict():
                     Proba2=Proba2+Tab_probas.loc[k,l]
                 elif k==l:
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
-        Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,
-                str(match.home_team_goals)+"-"+str(match.away_team_goals),xG_dom,
-                xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",
-                str(round(Proba2*100,1))+"%"]
+        Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.home_team_goals)+"-"+str(match.away_team_goals),
+            xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
     
         # Surprise ou non
         Liste_matchs['Surprise']=0
