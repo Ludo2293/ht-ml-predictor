@@ -103,7 +103,7 @@ def html_predict():
         Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,
                 str(match.home_team_goals)+"-"+str(match.away_team_goals),xG_dom,
                 xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",
-                str(round(Proba2*100,1))+"%",round(3*Proba1+ProbaN,2),round(3*Proba2+ProbaN,2)]
+                str(round(Proba2*100,1))+"%"]
     
         # Surprise ou non
         Liste_matchs['Surprise']=0
