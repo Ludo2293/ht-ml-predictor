@@ -39,25 +39,38 @@ def html_table():
 @app.route('/predict_match', methods=("POST", "GET"))
 def html_predict():
     def calcul_pred(id_init):
-        match = chpp.match(ht_id=id_init)
+        try:
+            match = chpp.match(ht_id=id_init,source="htointegrated")
+        except:
+            match = chpp.match(ht_id=id_init)
         # Estimation du Repli défensif
         diff_buts=match.home_team_goals-match.away_team_goals
-        Pen_att_dom=1
-        Bon_def_dom=1
-        Pen_att_ext=1
-        Bon_def_ext=1
         # Application de la fonction de "neutralisation" du repli défensif
-        if diff_buts>=2:
-            Pen_att_dom=.0008*diff_buts**2-.0419*diff_buts+1.0525
-            Bon_def_dom=.0013*diff_buts**2+.0283*diff_buts+.9622
-        elif diff_buts<=-2:
-            Pen_att_ext=.0008*diff_buts**2+.0419*diff_buts+1.0525
-            Bon_def_ext=.0013*diff_buts**2-.0283*diff_buts+.9622
-            
+        ## Calcul du nombre de minutes avec N buts d'écart
+        liste_minutes=[]
+        liste_hg=[]
+        liste_ag=[]
+        for i in range(0,len(match.goals)):
+            liste_minutes.append(match.goals[i]['minute'])
+            liste_hg.append(match.goals[i]['home_goals'])
+            liste_ag.append(match.goals[i]['away_goals'])
+        liste_minutes=[min(a,90) for a in liste_minutes]
+        liste_db=[0]+[a-b for a,b in zip(liste_hg,liste_ag)]
+        liste_db_att=[.91**(max(a,1)-1) for a in liste_db]
+        liste_db_def=[1.075**(max(a,1)-1) for a in liste_db]
+        liste_db_att_ext=[.91**-min(0,-max(-a,-1)+1) for a in liste_db]
+        liste_db_def_ext=[1.075**-min(0,-max(-a,-1)+1) for a in liste_db]
+        liste_md1=[0]+liste_minutes
+        liste_md2=liste_minutes+[90]
+        liste_md=[a-b for a,b in zip(liste_md2,liste_md1)]
+        Pen_att_dom=sum(a*b for a,b in zip(liste_db_att,liste_md))/90
+        Bon_def_dom=sum(a*b for a,b in zip(liste_db_def,liste_md))/90
+        Pen_att_ext=sum(a*b for a,b in zip(liste_db_att_ext,liste_md))/90
+        Bon_def_ext=sum(a*b for a,b in zip(liste_db_def_ext,liste_md))/90
         xG_dom=(match.home_team_rating_midfield==1)*(diff_buts==5)*5+(match.home_team_rating_midfield>1)*max(0.1,reglog_mod.predict([[match.home_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
-            .92*match.home_team_rating_right_att**3.5/(match.home_team_rating_right_att**3.5+match.away_team_rating_left_def**3.5),
-            .92*match.home_team_rating_left_att**3.5/(match.home_team_rating_left_att**3.5+match.away_team_rating_right_def**3.5),
-            .92*match.home_team_rating_mid_att**3.5/(match.home_team_rating_mid_att**3.5+match.away_team_rating_mid_def**3.5),
+            .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/((match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
+            .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/((match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
+            .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/((match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
             .92*match.home_team_rating_ind_set_pieces_att**3.5/(match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
             1*(match.home_team_tactic_type=='1')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='2')*match.home_team_tactic_skill,
             1*(match.home_team_tactic_type=='3')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='4')*match.home_team_tactic_skill,
@@ -65,10 +78,10 @@ def html_predict():
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill]])[0])
         # Extérieur
         xG_ext=(match.away_team_rating_midfield==1)*(diff_buts==-5)*5+(match.away_team_rating_midfield>1)*max(0.1,reglog_mod.predict([[match.away_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
-            .92*match.away_team_rating_right_att**3.5/(match.home_team_rating_right_att**3.5+match.away_team_rating_left_def**3.5),
-            .92*match.away_team_rating_left_att**3.5/(match.home_team_rating_left_att**3.5+match.away_team_rating_right_def**3.5),
-            .92*match.away_team_rating_mid_att**3.5/(match.home_team_rating_mid_att**3.5+match.away_team_rating_mid_def**3.5),
-            .92*match.away_team_rating_ind_set_pieces_att**3.5/(match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
+            .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/((match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
+            .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/((match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
+            .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/((match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
+            .92*match.away_team_rating_ind_set_pieces_att**3.5/(match.away_team_rating_ind_set_pieces_att**3.5+match.home_team_rating_ind_set_pieces_def**3.5),
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='2')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='3')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='4')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='8')*match.away_team_tactic_skill,
@@ -95,7 +108,7 @@ def html_predict():
                     Proba2=Proba2+Tab_probas.loc[k,l]
                 elif k==l:
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
-        Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.home_team_goals)+"-"+str(match.away_team_goals),
+        Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
             xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
     
         # Surprise ou non
