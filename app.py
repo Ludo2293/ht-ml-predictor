@@ -133,11 +133,34 @@ def html_predict_league():
             nb_matchs=56
         liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.league_fixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
         diff_buts=np.array([o.home_team_goals-o.away_team_goals for o in liste_matchs])
-        # Si dernière journée ne championnat ou finale de coupe, pas de repli défensif
-        Pen_att_dom=(diff_buts<2)+(.0008*diff_buts**2-.0419*diff_buts+1.0525)*(diff_buts>=2)
-        Bon_def_dom=(diff_buts<2)+(.0013*diff_buts**2+.0283*diff_buts+.9622)*(diff_buts>=2)
-        Pen_att_ext=(diff_buts>-2)+(.0008*diff_buts**2+.0419*diff_buts+1.0525)*(diff_buts<=-2)
-        Bon_def_ext=(diff_buts>-2)+(.0013*diff_buts**2-.0283*diff_buts+.9622)*(diff_buts<=-2)
+        # Repli défensif
+        liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.league_fixtures(ht_id=36215,season=78).matches][:nb_matchs]
+        Pen_att_dom=[1 for x in range(0,nb_matchs)]
+        Bon_def_dom=[1 for x in range(0,nb_matchs)]
+        Pen_att_ext=[1 for x in range(0,nb_matchs)]
+        Bon_def_ext=[1 for x in range(0,nb_matchs)]
+        for a in range(0,nb_matchs):  
+            match=liste_matchs[a]
+            liste_minutes=[]
+            liste_hg=[]
+            liste_ag=[]
+            for i in range(0,len(match.goals)):
+                liste_minutes.append(match.goals[i]['minute'])
+                liste_hg.append(match.goals[i]['home_goals'])
+                liste_ag.append(match.goals[i]['away_goals'])
+            liste_minutes=[min(a,90) for a in liste_minutes]
+            liste_db=[0]+[a-b for a,b in zip(liste_hg,liste_ag)]
+            liste_db_att=[.91**(max(a,1)-1) for a in liste_db]
+            liste_db_def=[1.075**(max(a,1)-1) for a in liste_db]
+            liste_db_att_ext=[.91**-min(0,-max(-a,-1)+1) for a in liste_db]
+            liste_db_def_ext=[1.075**-min(0,-max(-a,-1)+1) for a in liste_db]
+            liste_md1=[0]+liste_minutes
+            liste_md2=liste_minutes+[90]
+            liste_md=[a-b for a,b in zip(liste_md2,liste_md1)]
+            Pen_att_dom[a]=sum(a*b for a,b in zip(liste_db_att,liste_md))/90
+            Bon_def_dom[a]=sum(a*b for a,b in zip(liste_db_def,liste_md))/90
+            Pen_att_ext[a]=sum(a*b for a,b in zip(liste_db_att_ext,liste_md))/90
+            Bon_def_ext[a]=sum(a*b for a,b in zip(liste_db_def_ext,liste_md))/90
         home_team_rating_midfield=np.array([max(1,o.home_team_rating_midfield) for o in liste_matchs])
         away_team_rating_midfield=np.array([max(1,o.away_team_rating_midfield) for o in liste_matchs])
         home_team_rating_right_att=np.array([max(1,o.home_team_rating_right_att) for o in liste_matchs])/Pen_att_dom
