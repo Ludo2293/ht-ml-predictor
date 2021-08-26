@@ -71,6 +71,9 @@ def html_predict():
             .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/((match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
             .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/((match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
             .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/((match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
+            .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/((match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
+            .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/((match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
+            .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/((match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
             .92*match.home_team_rating_ind_set_pieces_att**3.5/(match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
             1*(match.home_team_tactic_type=='1')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='2')*match.home_team_tactic_skill,
             1*(match.home_team_tactic_type=='3')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='4')*match.home_team_tactic_skill,
@@ -81,6 +84,9 @@ def html_predict():
             .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/((match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
             .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/((match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
             .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/((match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
+            .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/((match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
+            .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/((match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
+            .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/((match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
             .92*match.away_team_rating_ind_set_pieces_att**3.5/(match.away_team_rating_ind_set_pieces_att**3.5+match.home_team_rating_ind_set_pieces_def**3.5),
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='2')*match.away_team_tactic_skill,
             1*(match.away_team_tactic_type=='3')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='4')*match.away_team_tactic_skill,
@@ -89,14 +95,20 @@ def html_predict():
         
         # Calcul des probabilités de victoire
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win'])
-        Tab_probas=pd.DataFrame(columns=range(0,))
-        Tab_probas.loc[0,0]=norm.cdf(0.5,xG_dom,1.2)*norm.cdf(0.5,xG_ext,1.2)
+        Tab_probas=pd.DataFrame(columns=range(0,15))
+        Tab_probas.loc[0,0]=norm.cdf(0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),
+            -.0156*xG_dom**2+.1694*xG_dom+.9)*norm.cdf(0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
         for l in range(1,15):
-            Tab_probas.loc[0,l]=norm.cdf(0.5,xG_dom,1.2)*(norm.cdf(l+0.5,xG_ext,1.2)-norm.cdf(l-0.5,xG_ext,1.2))
+            Tab_probas.loc[0,l]=norm.cdf(0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),
+                -.0156*xG_dom**2+.1694*xG_dom+.9)*(norm.cdf(l+0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(l-0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))
             for k in range(1,15):
-                Tab_probas.loc[k,l]=(norm.cdf(k+0.5,xG_dom,1.2)-norm.cdf(k-0.5,xG_dom,1.2))*(norm.cdf(l+0.5,xG_ext,1.2)-norm.cdf(l-0.5,xG_ext,1.2))
+                Tab_probas.loc[k,l]=(norm.cdf(k+0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(k-0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))*(norm.cdf(l+0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(l-0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))
         for k in range(1,15):
-            Tab_probas.loc[k,0]=(norm.cdf(k+0.5,xG_dom,1.2)-norm.cdf(k-0.5,xG_dom,1.2))*norm.cdf(0.5,xG_ext,1.2)
+            Tab_probas.loc[k,0]=(norm.cdf(k+0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(k-0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))*norm.cdf(0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
         Proba1=0
         ProbaN=0
         Proba2=0
@@ -196,6 +208,9 @@ def html_predict_league():
             pd.DataFrame(.92*(home_team_rating_right_att)**3.5/(home_team_rating_right_att**3.5+(away_team_rating_left_def)**3.5)),
             pd.DataFrame(.92*(home_team_rating_left_att)**3.5/(home_team_rating_left_att**3.5+(away_team_rating_right_def)**3.5)),
             pd.DataFrame(.92*(home_team_rating_mid_att)**3.5/(home_team_rating_mid_att**3.5+(away_team_rating_mid_def)**3.5)),
+            pd.DataFrame(.92*(away_team_rating_right_att)**3.5/(away_team_rating_right_att**3.5+(home_team_rating_left_def)**3.5)),
+            pd.DataFrame(.92*(away_team_rating_left_att)**3.5/(away_team_rating_left_att**3.5+(home_team_rating_right_def)**3.5)),
+            pd.DataFrame(.92*(away_team_rating_mid_att)**3.5/(away_team_rating_mid_att**3.5+(home_team_rating_mid_def)**3.5)),
             pd.DataFrame(.92*home_team_rating_ind_set_pieces_att**3.5/(home_team_rating_ind_set_pieces_att**3.5+away_team_rating_ind_set_pieces_def**3.5)),
             pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_2),pd.DataFrame(home_team_tactic_skill_3),
             pd.DataFrame(home_team_tactic_skill_4),pd.DataFrame(home_team_tactic_skill_7),pd.DataFrame(home_team_tactic_skill_8),
@@ -208,6 +223,9 @@ def html_predict_league():
             pd.DataFrame(.92*(away_team_rating_right_att)**3.5/(away_team_rating_right_att**3.5+(home_team_rating_left_def)**3.5)),
             pd.DataFrame(.92*(away_team_rating_left_att)**3.5/(away_team_rating_left_att**3.5+(home_team_rating_right_def)**3.5)),
             pd.DataFrame(.92*(away_team_rating_mid_att)**3.5/(away_team_rating_mid_att**3.5+(home_team_rating_mid_def)**3.5)),
+            pd.DataFrame(.92*(home_team_rating_right_att)**3.5/(home_team_rating_right_att**3.5+(away_team_rating_left_def)**3.5)),
+            pd.DataFrame(.92*(home_team_rating_left_att)**3.5/(home_team_rating_left_att**3.5+(away_team_rating_right_def)**3.5)),
+            pd.DataFrame(.92*(home_team_rating_mid_att)**3.5/(home_team_rating_mid_att**3.5+(away_team_rating_mid_def)**3.5)),
             pd.DataFrame(.92*away_team_rating_ind_set_pieces_att**3.5/(away_team_rating_ind_set_pieces_att**3.5+home_team_rating_ind_set_pieces_def**3.5)),
             pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_2),pd.DataFrame(away_team_tactic_skill_3),
             pd.DataFrame(away_team_tactic_skill_4),pd.DataFrame(away_team_tactic_skill_7),pd.DataFrame(away_team_tactic_skill_8),
@@ -219,14 +237,19 @@ def html_predict_league():
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win','Xpts Home','Xpts Away','Rpts Home','Rpts Away'])
         for i in range(0,nb_matchs):
             Tab_probas=pd.DataFrame(columns=range(0,15))
-            Tab_probas.loc[0,0]=norm.cdf(0.5,xG_dom[i],1)*norm.cdf(0.5,xG_ext[i],1)
+            Tab_probas.loc[0,0]=norm.cdf(0.5,min(xG_dom[i],.4755*xG_dom[i]**3-1.8372*xG_dom[i]**2+3.2434*xG_dom[i]-.9797),
+            -.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)*norm.cdf(0.5,min(xG_ext[i],.4755*xG_ext[i]**3-1.8372*xG_ext[i]**2+3.2434*xG_ext[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)
             for l in range(1,15):
-                Tab_probas.loc[0,l]=norm.cdf(0.5,xG_dom[i],1)*(norm.cdf(l+0.5,xG_ext[i],1)-norm.cdf(l-0.5,xG_ext[i],1))
+                Tab_probas.loc[0,l]=norm.cdf(0.5,min(xG_dom[i],.4755*xG_dom[i]**3-1.8372*xG_dom[i]**2+3.2434*xG_dom[i]-.9797),
+                    -.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)*(norm.cdf(l+0.5,min(xG_ext[i],.4755*xG_ext[i]**3-1.8372*xG_ext[i]**2+3.2434*xG_ext[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)
+                    -norm.cdf(l-0.5,min(xG_ext[i],.4755*xG_ext[i]**3-1.8372*xG_ext[i]**2+3.2434*xG_ext[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9))
                 for k in range(1,15):
-                    Tab_probas.loc[k,l]=(norm.cdf(k+0.5,xG_dom[i],1)-norm.cdf(k-0.5,xG_dom[i],1))*(norm.cdf(l+0.5,xG_ext[i],1)
-                                        -norm.cdf(l-0.5,xG_ext[i],1))
+                    Tab_probas.loc[k,l]=(norm.cdf(k+0.5,min(xG_dom[i],.4755*xG_dom[i]**3-1.8372*xG_dom[i]**2+3.2434*xG_dom[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)
+                    -norm.cdf(k-0.5,min(xG_dom[i],.4755*xG_dom[i]**3-1.8372*xG_dom[i]**2+3.2434*xG_dom[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9))*(norm.cdf(l+0.5,min(xG_ext[i],.4755*xG_ext[i]**3-1.8372*xG_ext[i]**2+3.2434*xG_ext[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)
+                    -norm.cdf(l-0.5,min(xG_ext[i],.4755*xG_ext[i]**3-1.8372*xG_ext[i]**2+3.2434*xG_ext[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9))
             for k in range(1,15):
-                Tab_probas.loc[k,0]=(norm.cdf(k+0.5,xG_dom[i],1)-norm.cdf(k-0.5,xG_dom[i],1))*norm.cdf(0.5,xG_ext[i],1)
+                Tab_probas.loc[k,0]=(norm.cdf(k+0.5,min(xG_dom[i],.4755*xG_dom[i]**3-1.8372*xG_dom[i]**2+3.2434*xG_dom[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)
+                    -norm.cdf(k-0.5,min(xG_dom[i],.4755*xG_dom[i]**3-1.8372*xG_dom[i]**2+3.2434*xG_dom[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9))*norm.cdf(0.5,min(xG_ext[i],.4755*xG_ext[i]**3-1.8372*xG_ext[i]**2+3.2434*xG_ext[i]-.9797),-.0156*xG_dom[i]**2+.1694*xG_dom[i]+.9)
             Proba1=0
             ProbaN=0
             Proba2=0
