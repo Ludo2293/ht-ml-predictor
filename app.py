@@ -279,7 +279,7 @@ def html_predict_league():
         classement['Expected points']=classement['Xpts Home']+classement['Xpts Away']
         classement['Points difference']=classement['Real points']-classement['Expected points']
         classement=classement.rename({'Home Team':'Team'},axis=1).drop(['Xpts Home','Xpts Away','Rpts Home','Rpts Away','Away Team'],axis=1).sort_values(by='Real points',ascending=0)
-        classement=classement.sort_values(by='Expected points',ascending=0).reset_index().drop('index',axis=1)
+        classement=classement.sort_values(by='Expected points',ascending=0).reset_index().drop('index',axis=1).drop_duplicates()
         Liste_matchs=Liste_matchs.drop(['Xpts Home','Xpts Away','Rpts Home','Rpts Away'],axis=1)
             
         # Surprise ou non
