@@ -271,12 +271,15 @@ def html_predict_league():
                     1*(liste_matchs[i].home_team_goals==liste_matchs[i].away_team_goals)]
         
         
-        classement=pd.DataFrame(Liste_matchs.groupby('Home Team').agg({'Xpts Home':'sum','Rpts Home':'sum'}).reset_index()[['Home Team','Xpts Home','Rpts Home']]).merge(pd.DataFrame(Liste_matchs.groupby('Away Team').agg({'Xpts Away':'sum','Rpts Away':'sum'}).reset_index()[['Away Team','Xpts Away','Rpts Away']]).rename({'Away Team':'Home Team'},axis=1),on='Home Team',how='left').fillna(0)
+        classement_dom=pd.DataFrame(Liste_matchs.groupby('Home Team').agg({'Xpts Home':'sum','Rpts Home':'sum'}).reset_index()[['Home Team','Xpts Home','Rpts Home']]).merge(pd.DataFrame(Liste_matchs.groupby('Away Team').agg({'Xpts Away':'sum','Rpts Away':'sum'}).reset_index()[['Away Team','Xpts Away','Rpts Away']]).rename({'Away Team':'Home Team'},axis=1),on='Home Team',how='left').fillna(0)
+        classement_ext=pd.DataFrame(Liste_matchs.groupby('Away Team').agg({'Xpts Away':'sum','Rpts Away':'sum'}).reset_index()[['Away Team','Xpts Away','Rpts Away']]).merge(pd.DataFrame(Liste_matchs.groupby('Home Team').agg({'Xpts Home':'sum','Rpts Home':'sum'}).reset_index()[['Home Team','Xpts Home','Rpts Home']]).rename({'Home Team':'Away Team'},axis=1),on='Away Team',how='left').fillna(0)
+        classement=pd.concat([classement_dom,classement_ext],axis=0)
+        classement['Home Team']=classement['Home Team'].fillna(classement['Away Team'])
         classement['Real points']=classement['Rpts Home']+classement['Rpts Away']
         classement['Expected points']=classement['Xpts Home']+classement['Xpts Away']
         classement['Points difference']=classement['Real points']-classement['Expected points']
-        classement=classement.rename({'Home Team':'Team'},axis=1).drop(['Xpts Home','Xpts Away','Rpts Home','Rpts Away'],axis=1).sort_values(by='Real points',ascending=0)
-        classement=classement.sort_values(by='Expected points',ascending=0)
+        classement=classement.rename({'Home Team':'Team'},axis=1).drop(['Xpts Home','Xpts Away','Rpts Home','Rpts Away','Away Team'],axis=1).sort_values(by='Real points',ascending=0)
+        classement=classement.sort_values(by='Expected points',ascending=0).reset_index().drop('index',axis=1)
         Liste_matchs=Liste_matchs.drop(['Xpts Home','Xpts Away','Rpts Home','Rpts Away'],axis=1)
             
         # Surprise ou non
