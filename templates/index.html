@@ -36,8 +36,7 @@
 						<div class="inner">
 							<h1>HT-ML Predictor</h1>
 							<p>Have you been lucky or not ? This tool can answer your question by estimating
-							the probabilities to win of each team in a Hattrick match already played. The probabilities are calculated with a Machine Learning algorithm, trained with all the matchs played
-								in the world in seasons 76 and 77.</p>
+							the probabilities to win of each team in a Hattrick match already played. The probabilities are calculated with a Machine Learning algorithm, trained with around 3,5 million Hattrick matches.</p>
 							<ul class="actions">
 								<li><a href="#one" class="button scrolly">Let's go !</a></li>
 							</ul>
@@ -51,7 +50,7 @@
 							<div class="content">
 								<div class="inner">
 									<h2>Match Predictor</h2>
-									<p>Enter your match ID and discover what were the most probable results !</p>
+									<p>Enter your match ID and discover what were the most probable results ! Available for all matches (League, cup, NT and recent tournaments matches)</p>
 
 									<form action="{{ url_for('html_predict')}}" method="POST">
 	    								Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID'/><br>
@@ -89,22 +88,21 @@
 						<div class="inner">
 							<h2>Methodology</h2>
 							<p>This tool is based on a Machine Learning algorithm "Light GBM". It has been trained and 
-							tested on a database including the data of more than 2 million matches all around the world on seasons 76 and 77.</p>
+							tested on a database including the data of more than 3 million matches all around the world (seasons 74 to 77).</p>
 							
 							<p>The algorithm estimates the "Expected goals" scored by a team, depending on some features listed below. The "Expected goals" is the average number of goals
-							that would be observed if the match is replayed a lot of times.
-							The probabilities of the results (home win, away win and draw) are deducted from the values of the expected goals, applying a standard distribution
-							with expected goals as esperance and 1 as standard deviation.<p/>
+							that should be observed if the match is replayed a lot of times.
+							The probabilities of the results (home win, away win and draw) are deducted from the values of the expected goals, applying a formula close to a standard distribution.<p/>
 							
 							<p>The following features are used for the predictions :<br>
-							- Final match ratings for the team and its opponent. If one of the teams won with a goal difference higher to 1, the final match ratings are simulated without defensive bonus and offensive malus<br>
-							- Tactic types and skills are taken into account for both teams. It is efficient for long shots tactic too. </p>
+							- Final match ratings for the team and its opponent. In case of pull back, the ratings are recalculated to "eliminate" the effect of the pull back.<br>
+							- Tactic types and skills are taken into account for both teams. The predictions are reliable for teams using long shots tactic too. </p>
 							
-							<p>Specialities of players following their position on the field have been used in a first version. There are not in the final version, because the predictions
+							<p>Specialties of players following their position on the field have been used in a first version. There are not in the final version, because the predictions
 							are more accurate without this feature. It absolutely doesn't mean that specialities are useless, but their impact 
 							on the expected goals is very dependant on the skills of the players, and it is impossible to get this information.</p>
 							
-							<p>Special thanks to Nickarana for sharing his huge database, and to Jean-Mi for the very useful Python framework pyCHPP !</p>
+							<p>Special thanks to Nickarana for sharing his huge database (used for training the model), and to Jean-Mi for the very useful Python framework pyCHPP !</p>
 							
 							<p>If you have any question or suggestion about this website, don't hesitate to contact Ludo2293 by HT-mail or in the dedicated post on Hattrick forum.</p>
 														
