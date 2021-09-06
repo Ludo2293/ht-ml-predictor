@@ -53,7 +53,7 @@
 									<h2>Match Predictor</h2>
 									<p>Enter your match ID and discover what were the most probable results ! Available for all matches (League, cup, NT and recent tournaments matches)</p>
 
-									<form action="{{ url_for('html_predict')}}" method="POST">
+									<form action="{{ url_for('html_predict')}}" method="GET">
 	    								Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID'/><br>
 									<button type="submit" class="btn btn-primary">Calculate</button><br>
 									</form>
@@ -74,7 +74,7 @@
 									<h2>League Predictor</h2>
 									<p>Simulate all the matchs of your league, for the current season or for previouses. Along the season, who was lucky and who was not ?
 									The calculation time is around 20 seconds.</p>
-									<form action="{{ url_for('html_predict_league')}}" method="POST">
+									<form action="{{ url_for('html_predict_league')}}" method="GET">
 	    									Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' /><br>
 	    									Enter the season number : <input type='text' name='Season' placeholder='Season'/><br>
 										<button type="submit" class="btn btn-primary">Calculate</button>
