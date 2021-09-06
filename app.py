@@ -13,7 +13,7 @@ chpp = CHPP(os.getenv('consumer_key'),
             os.getenv('access_token_secret'))
 
 # Chargement du modèle de Machine Learning
-reglog_mod=load('lgbm.joblib')
+model=load('lgbm.joblib')
 
 # Fonction pour surligner les surprises
 def highlight_surprises(s, column):
@@ -67,7 +67,7 @@ def html_predict():
         Bon_def_dom=sum(a*b for a,b in zip(liste_db_def,liste_md))/90
         Pen_att_ext=sum(a*b for a,b in zip(liste_db_att_ext,liste_md))/90
         Bon_def_ext=sum(a*b for a,b in zip(liste_db_def_ext,liste_md))/90
-        xG_dom=(match.home_team_rating_midfield==1)*(diff_buts==5)*5+(match.home_team_rating_midfield>1)*max(0.1,reglog_mod.predict([[match.home_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
+        xG_dom=(match.home_team_rating_midfield==1)*(diff_buts==5)*5+(match.home_team_rating_midfield>1)*max(0.1,model.predict([[match.home_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
             .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/((match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
             .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/((match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
             .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/((match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
@@ -80,7 +80,7 @@ def html_predict():
             1*(match.home_team_tactic_type=='7')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='8')*match.home_team_tactic_skill,
             1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill]])[0])
         # Extérieur
-        xG_ext=(match.away_team_rating_midfield==1)*(diff_buts==-5)*5+(match.away_team_rating_midfield>1)*max(0.1,reglog_mod.predict([[match.away_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
+        xG_ext=(match.away_team_rating_midfield==1)*(diff_buts==-5)*5+(match.away_team_rating_midfield>1)*max(0.1,model.predict([[match.away_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
             .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/((match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
             .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/((match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
             .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/((match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
@@ -132,7 +132,10 @@ def html_predict():
         Liste_matchs=Liste_matchs.style.hide_index().hide_columns(['Surprise']).set_table_styles([{"selector": "th", "props": [("text-align", "center")]},
             {"selector": "td", "props": [("text-align", "center")]}]).apply(highlight_surprises,column=['Surprise'],axis=1).set_precision(2).render()
         return Liste_matchs
-    Liste_matchs=calcul_pred(int(request.form['MatchID']))
+    if request.method=='POST':
+        Liste_matchs=calcul_pred(int(request.form['MatchID']))
+    else:
+        Liste_matchs=calcul_pred(int(request.args.get('MatchID')))
     return render_template('match_pred.html',tables=[Liste_matchs],titles=['MATCH RESULT PROBABILITIES'])
     
 # PREDICTEUR DE LIGUE
@@ -204,7 +207,7 @@ def html_predict_league():
         away_team_tactic_skill_8=np.array([1*(o.away_team_tactic_type=='8')*o.away_team_tactic_skill for o in liste_matchs])
         
         # A retester dès que possible avec le traitement des forfaits
-        xG_dom=(home_team_rating_midfield==1)*(diff_buts==5)*5+(home_team_rating_midfield>1)*np.around(reglog_mod.predict(pd.concat([pd.DataFrame(home_team_rating_midfield**3/(home_team_rating_midfield**3+away_team_rating_midfield**3)),
+        xG_dom=(home_team_rating_midfield==1)*(diff_buts==5)*5+(home_team_rating_midfield>1)*np.around(model.predict(pd.concat([pd.DataFrame(home_team_rating_midfield**3/(home_team_rating_midfield**3+away_team_rating_midfield**3)),
             pd.DataFrame(.92*(home_team_rating_right_att)**3.5/(home_team_rating_right_att**3.5+(away_team_rating_left_def)**3.5)),
             pd.DataFrame(.92*(home_team_rating_left_att)**3.5/(home_team_rating_left_att**3.5+(away_team_rating_right_def)**3.5)),
             pd.DataFrame(.92*(home_team_rating_mid_att)**3.5/(home_team_rating_mid_att**3.5+(away_team_rating_mid_def)**3.5)),
@@ -215,11 +218,11 @@ def html_predict_league():
             pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_2),pd.DataFrame(home_team_tactic_skill_3),
             pd.DataFrame(home_team_tactic_skill_4),pd.DataFrame(home_team_tactic_skill_7),pd.DataFrame(home_team_tactic_skill_8),
             pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_7)],axis=1),
-            num_iteration=reglog_mod.best_iteration_),decimals=2)
+            num_iteration=model.best_iteration_),decimals=2)
         # On définit une prévision "plancher" à 0.1 (hors cas de forfait)
         xG_dom[(xG_dom<.1) & (home_team_rating_midfield!=1)]=.1
         
-        xG_ext=(home_team_rating_midfield==1)*(diff_buts==-5)*5+(home_team_rating_midfield>1)*np.around(reglog_mod.predict(pd.concat([pd.DataFrame(away_team_rating_midfield**3/(away_team_rating_midfield**3+home_team_rating_midfield**3)),
+        xG_ext=(home_team_rating_midfield==1)*(diff_buts==-5)*5+(home_team_rating_midfield>1)*np.around(model.predict(pd.concat([pd.DataFrame(away_team_rating_midfield**3/(away_team_rating_midfield**3+home_team_rating_midfield**3)),
             pd.DataFrame(.92*(away_team_rating_right_att)**3.5/(away_team_rating_right_att**3.5+(home_team_rating_left_def)**3.5)),
             pd.DataFrame(.92*(away_team_rating_left_att)**3.5/(away_team_rating_left_att**3.5+(home_team_rating_right_def)**3.5)),
             pd.DataFrame(.92*(away_team_rating_mid_att)**3.5/(away_team_rating_mid_att**3.5+(home_team_rating_mid_def)**3.5)),
@@ -230,7 +233,7 @@ def html_predict_league():
             pd.DataFrame(away_team_tactic_skill_1),pd.DataFrame(away_team_tactic_skill_2),pd.DataFrame(away_team_tactic_skill_3),
             pd.DataFrame(away_team_tactic_skill_4),pd.DataFrame(away_team_tactic_skill_7),pd.DataFrame(away_team_tactic_skill_8),
             pd.DataFrame(home_team_tactic_skill_1),pd.DataFrame(home_team_tactic_skill_7)],axis=1),
-            num_iteration=reglog_mod.best_iteration_),decimals=2)
+            num_iteration=model.best_iteration_),decimals=2)
         xG_ext[(xG_ext<.1) & (away_team_rating_midfield!=1)]=.1
         
         
@@ -298,7 +301,12 @@ def html_predict_league():
            {"selector": "td", "props": [("text-align", "center")]}]).apply(highlight_surprises,column=['Surprise'],axis=1).set_precision(2).render()
         
         return Liste_matchs, classement
-    Liste_matchs, classement=calcul_pred_league(int(request.form['LeagueID']),int(request.form['Season']))
+    if request.method=='POST':
+        Liste_matchs, classement=calcul_pred_league(int(request.form['LeagueID']),int(request.form['Season']))
+    else:
+        saison=int(request.args.get('Season'))
+        ligue=int(request.args.get('LeagueID'))
+        Liste_matchs, classement=calcul_pred_league(ligue,saison)
     return render_template('league_pred.html',tables=[classement,Liste_matchs],titles=['SIMULATED RANKING - What is the theorical ranking ?','COMPLETE MATCH LIST - Surprising results are highlighted in yellow'])
 
 if __name__ == '__main__':
