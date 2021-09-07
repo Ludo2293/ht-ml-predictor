@@ -309,5 +309,81 @@ def html_predict_league():
         Liste_matchs, classement=calcul_pred_league(ligue,saison)
     return render_template('league_pred.html',tables=[classement,Liste_matchs],titles=['SIMULATED RANKING - What is the theorical ranking ?','COMPLETE MATCH LIST - Surprising results are highlighted in yellow'])
 
+
+# Prédicteur de match customisable
+@app.route('/predict_match_cust', methods=("POST", "GET"))
+def html_predict_cust():
+    def calcul_pred_cust(HomeMidfield, AwayMidfield, HomeRightAtt, HomeLeftAtt, HomeMidAtt, HomeRightDef, HomeLeftDef, HomeMidDef,
+        AwayRightAtt, AwayLeftAtt, AwayMidAtt, AwayRightDef, AwayLeftDef, AwayMidDef, HomeIndSPDef, HomeIndSPAtt, AwayIndSPDef,
+        AwayIndSPAtt, TacticHome, TacticAway, TacticSkillHome, TacticSkillAway):
+        xG_dom=max(0.1,model.predict([[(HomeMidfield*4-3)**3/((HomeMidfield*4-3)**3+(AwayMidfield*4-3)**3),
+            .92*(HomeRightAtt*4-3)**3.5/((HomeRightAtt*4-3)**3.5+(AwayLeftDef*4-3)**3.5),
+            .92*(HomeLeftAtt*4-3)**3.5/((HomeLeftAtt*4-3)**3.5+(AwayRightDef*4-3)**3.5),
+            .92*(HomeMidAtt*4-3)**3.5/((HomeMidAtt*4-3)**3.5+(AwayMidDef*4-3)**3.5),
+            .92*(AwayRightAtt*4-3)**3.5/((AwayRightAtt*4-3)**3.5+(HomeLeftDef*4-3)**3.5),
+            .92*(AwayLeftAtt*4-3)**3.5/((AwayLeftAtt*4-3)**3.5+(HomeRightDef*4-3)**3.5),
+            .92*(AwayMidAtt*4-3)**3.5/((AwayMidAtt*4-3)**3.5+(HomeMidDef*4-3)**3.5),
+            .92*(HomeIndSPAtt*4-3)**3.5/((HomeIndSPAtt*4-3)**3.5+(AwayIndSPDef*4-3)**3.5),
+            1*(TacticHome=='Pressing')*TacticSkillHome,1*(TacticHome=='Counter-attacks')*TacticSkillHome,
+            1*(TacticHome=='Attack in the middle')*TacticSkillHome,1*(TacticHome=='Attack on wings')*TacticSkillHome,
+            1*(TacticHome=='Play creatively')*TacticSkillHome,1*(TacticHome=='Long shots')*TacticSkillHome,
+            1*(TacticAway=='Pressing')*TacticSkillAway,1*(TacticAway=='Play creatively')*TacticSkillAway]])[0])
+        # Extérieur
+        xG_ext=max(0.1,model.predict([[(AwayMidfield*4-3)**3/((AwayMidfield*4-3)**3+(HomeMidfield*4-3)**3),
+            .92*(AwayRightAtt*4-3)**3.5/((AwayRightAtt*4-3)**3.5+(HomeLeftDef*4-3)**3.5),
+            .92*(AwayLeftAtt*4-3)**3.5/((AwayLeftAtt*4-3)**3.5+(HomeRightDef*4-3)**3.5),
+            .92*(AwayMidAtt*4-3)**3.5/((AwayMidAtt*4-3)**3.5+(HomeMidDef*4-3)**3.5),
+            .92*(HomeRightAtt*4-3)**3.5/((HomeRightAtt*4-3)**3.5+(AwayLeftDef*4-3)**3.5),
+            .92*(HomeLeftAtt*4-3)**3.5/((HomeLeftAtt*4-3)**3.5+(AwayRightDef*4-3)**3.5),
+            .92*(HomeMidAtt*4-3)**3.5/((HomeMidAtt*4-3)**3.5+(AwayMidDef*4-3)**3.5),
+            .92*(AwayIndSPAtt*4-3)**3.5/((AwayIndSPAtt*4-3)**3.5+(HomeIndSPDef*4-3)**3.5),
+            1*(TacticAway=='Pressing')*TacticSkillAway, 1*(TacticAway=='Counter-attacks')*TacticSkillAway,
+            1*(TacticAway=='Attack in the middle')*TacticSkillAway,1*(TacticAway=='Attack on wings')*TacticSkillAway,
+            1*(TacticAway=='Play creatively')*TacticSkillAway,1*(TacticAway=='Long shots')*TacticSkillAway,
+            1*(TacticHome=='Pressing')*TacticSkillHome,1*(TacticHome=='Play creatively')*TacticSkillHome]])[0])
+        
+        # Calcul des probabilités de victoire
+        Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','xG Home','xG Away','Home win','Draw','Away win'])
+        Tab_probas=pd.DataFrame(columns=range(0,15))
+        Tab_probas.loc[0,0]=norm.cdf(0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),
+            -.0156*xG_dom**2+.1694*xG_dom+.9)*norm.cdf(0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+        for l in range(1,15):
+            Tab_probas.loc[0,l]=norm.cdf(0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),
+                -.0156*xG_dom**2+.1694*xG_dom+.9)*(norm.cdf(l+0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(l-0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))
+            for k in range(1,15):
+                Tab_probas.loc[k,l]=(norm.cdf(k+0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(k-0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))*(norm.cdf(l+0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(l-0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))
+        for k in range(1,15):
+            Tab_probas.loc[k,0]=(norm.cdf(k+0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+                -norm.cdf(k-0.5,min(xG_dom,.4755*xG_dom**3-1.8372*xG_dom**2+3.2434*xG_dom-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9))*norm.cdf(0.5,min(xG_ext,.4755*xG_ext**3-1.8372*xG_ext**2+3.2434*xG_ext-.9797),-.0156*xG_dom**2+.1694*xG_dom+.9)
+        Proba1=0
+        ProbaN=0
+        Proba2=0
+        for k in range(0,15):
+            for l in range(0,15):
+                if k>l:
+                    Proba1=Proba1+Tab_probas.loc[k,l]
+                elif k<l:
+                    Proba2=Proba2+Tab_probas.loc[k,l]
+                elif k==l:
+                    ProbaN=ProbaN+Tab_probas.loc[k,l]
+        Liste_matchs.loc[0]=['Home Team','Away team',xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
+    
+        # Surprise ou non
+        Liste_matchs=Liste_matchs.style.hide_index().set_table_styles([{"selector": "th", "props": [("text-align", "center")]},
+            {"selector": "td", "props": [("text-align", "center")]}]).set_precision(2).render()
+        return Liste_matchs
+    Liste_matchs=calcul_pred_cust(float(request.form['HomeMidfield']),float(request.form['AwayMidfield']),
+        float(request.form['HomeRightAtt']),float(request.form['HomeLeftAtt']),float(request.form['HomeMidAtt']),
+        float(request.form['HomeRightDef']),float(request.form['HomeLeftDef']),float(request.form['HomeMidDef']),
+        float(request.form['AwayRightAtt']),float(request.form['AwayLeftAtt']),float(request.form['AwayMidAtt']),
+        float(request.form['AwayRightDef']),float(request.form['AwayLeftDef']),float(request.form['AwayMidDef']),
+        float(request.form['HomeIndSPDef']),float(request.form['HomeIndSPAtt']),float(request.form['AwayIndSPDef']),
+        float(request.form['AwayIndSPAtt']),request.form['TacticHome'],request.form['TacticAway'],
+        int(request.form['TacticSkillHome']),int(request.form['TacticSkillAway']))
+    return render_template('match_pred_cust.html',tables=[Liste_matchs],titles=['MATCH RESULT PROBABILITIES'])
+
 if __name__ == '__main__':
     app.run()
