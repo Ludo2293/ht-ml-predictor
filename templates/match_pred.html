@@ -20,7 +20,7 @@
 
 			<div>
 				<form action="{{ url_for('html_predict')}}" method="GET">
-	    				Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID'/><br>
+	    				Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID' required/><br>
 					<button type="submit" class="btn btn-primary">Calculate</button>
 				</form>
 				<p><I>You can find below the expected goals estimated and the probabilites of the different results.

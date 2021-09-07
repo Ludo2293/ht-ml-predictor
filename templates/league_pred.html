@@ -22,8 +22,8 @@
 
 			<div>
 				<form action="{{ url_for('html_predict_league')}}" method="GET">
-	    				Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' /><br>
-	    				Enter the season number : <input type='text' name='Season' placeholder='Season'/><br>
+	    				Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' required/><br>
+	    				Enter the season number : <input type='text' name='Season' placeholder='Season' required/><br>
 					<button type="submit" class="btn btn-primary">Calculate</button>
 				</form>
 
