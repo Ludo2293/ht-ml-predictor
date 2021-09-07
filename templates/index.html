@@ -22,7 +22,8 @@
 							<li><a href="#intro">Welcome</a></li>
 							<li><a href="#one">Match predictor</a></li>
 							<li><a href="#two">League predictor</a></li>
-							<li><a href="#three">Methodology</a></li>
+							<li><a href="#three">Custom match predictor</a></li>
+							<li><a href="#four">Methodology</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -53,7 +54,7 @@
 									<p>Enter your match ID and discover what were the most probable results ! Available for all matches (League, cup, NT and recent tournaments matches)</p>
 
 									<form action="{{ url_for('html_predict')}}" method="GET">
-	    								Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID'/><br>
+	    								Enter your match ID : <input type='text' name='MatchID' placeholder='MatchID' required/><br>
 									<button type="submit" class="btn btn-primary">Calculate</button><br>
 									</form>
 				
@@ -65,6 +66,7 @@
 							</div>
 						</section>
 					</section>
+				<!-- Two -->
 					<section id="two" class="wrapper style2 spotlights">
 						<section>
 							<a href="#" class="image"><img src="static/images/coupe.jpg" alt="" data-position="top center" /></a>
@@ -74,17 +76,70 @@
 									<p>Simulate all the matchs of your league, for the current season or for previouses. Along the season, who was lucky and who was not ?
 									The calculation time is around 20 seconds.</p>
 									<form action="{{ url_for('html_predict_league')}}" method="GET">
-	    									Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' /><br>
-	    									Enter the season number : <input type='text' name='Season' placeholder='Season'/><br>
+	    									Enter your league ID : <input type='text' name='LeagueID' placeholder='LeagueID' required><br>
+	    									Enter the season number : <input type='text' name='Season' placeholder='Season' required/><br>
 										<button type="submit" class="btn btn-primary">Calculate</button>
 									</form>
 								</div>
 							</div>
 						</section>
 					</section>
+				<!-- Three -->
+					<section id="three" class="wrapper style2 spotlights">
+						<section>
+							<a href="#" class="image"><img src="static/images/ballon_but.jpg" alt="" data-position="center center" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Customizable Match Predictor</h2>
+									<p>Enter the match ratings manually to simulate the match !</p>
 
-				<!-- Two -->
-					<section id="three" class="wrapper style3 fade-up">
+									<form action="{{ url_for('html_predict_cust')}}" method="POST">
+										<table><tr><td><input type='text' name='HomeMidfield' placeholder='HomeMidfield' required/></td><td><input type='text' name='AwayMidfield' placeholder='AwayMidfield' required/></td></tr>
+										<tr><td><input type='text' name='HomeRightDef' placeholder='HomeRightDef' required/></td><td><input type='text' name='AwayRightDef' placeholder='AwayRightDef' required/></td></tr>
+										<tr><td><input type='text' name='HomeMidDef' placeholder='HomeMidDef' required/></td><td><input type='text' name='AwayMidDef' placeholder='AwayMidDef' required/></td></tr>
+										<tr><td><input type='text' name='HomeLeftDef' placeholder='HomeLeftDef' required/></td><td><input type='text' name='AwayLeftDef' placeholder='AwayLeftDef' required/></td></tr>
+										<tr><td><input type='text' name='HomeRightAtt' placeholder='HomeRightAtt' required/></td><td><input type='text' name='AwayRightAtt' placeholder='AwayRightAtt' required/></td></tr>
+										<tr><td><input type='text' name='HomeMidAtt' placeholder='HomeMidAtt' required/></td><td><input type='text' name='AwayMidAtt' placeholder='AwayMidAtt' required/></td></tr>
+										<tr><td><input type='text' name='HomeLeftAtt' placeholder='HomeLeftAtt' required/></td><td><input type='text' name='AwayLeftAtt' placeholder='AwayLeftAtt' required/></td></tr>
+										<tr><td><input type='text' name='HomeIndSPDef' placeholder='HomeIndSPDef' required/></td><td><input type='text' name='AwayIndSPDef' placeholder='AwayIndSPDef' required></td></tr>
+										<tr><td><input type='text' name='HomeIndSPAtt' placeholder='HomeIndSPAtt' required/></td><td><input type='text' name='AwayIndSPAtt' placeholder='AwayIndSPAtt' required/></td></tr>
+										<tr><td><label for="tactic-type">Tactic Type/Skill Home :</label>
+											<select name="TacticHome" id="tactic-type" required>
+											<option value="">--Please choose an option--</option>
+											<option value="Normal">Normal</option>
+											<option value="Pressing">Pressing</option>
+											<option value="Counter-attacks">Counter-attacks</option>
+											<option value="Attack in the middle">Attack in the middle</option>
+											<option value="Attack on wings">Attack on wings</option>
+											<option value="Play creatively">Play creatively</option>
+											<option value="Long shots">Long shots</option></select></td>
+										<td><label for="tactic-type">Tactic Type/Skill Away :</label>
+											<select name="TacticAway" id="tactic-type" required>
+											<option value="">--Please choose an option--</option>
+											<option value="Normal">Normal</option>
+											<option value="Pressing">Pressing</option>
+											<option value="Counter-attacks">Counter-attacks</option>
+											<option value="Attack in the middle">Attack in the middle</option>
+											<option value="Attack on wings">Attack on wings</option>
+											<option value="Play creatively">Play creatively</option>
+											<option value="Long shots">Long shots</option></select></td></tr>
+
+										<tr><td><input type='text' name='TacticSkillHome' placeholder='TacticSkillHome' value='0' required/></td><td><input type='text' name='TacticSkillAway' placeholder='TacticSkillAway' value='0' required/></td></tr></table>
+																				 
+									<button type="submit" class="btn btn-primary">Calculate</button><br>
+									</form>
+				
+									{% for table in tables %}
+        		    							{{titles[loop.index]}}
+            									{{ table|safe }}
+									{% endfor %}
+								</div>
+							</div>
+						</section>
+					</section>
+
+				<!-- Four -->
+					<section id="four" class="wrapper style3 fade-up">
 						<div class="inner">
 							<h2>Methodology</h2>
 							<p>This tool is based on a Machine Learning algorithm "Light GBM". It has been trained and 

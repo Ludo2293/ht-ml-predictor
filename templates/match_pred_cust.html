@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>HT-ML Predictor - Match prediction</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="static/css/main.css" />
+		<noscript><link rel="stylesheet" type="text/css" href="static/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Header -->
+			<header id="header">
+				<a class="title">HT-ML Predictor</a>
+				<nav>
+					<ul>
+						<li><a href="javascript:history.back()">Home</a></li>
+					</ul>
+				</nav>
+			</header>
+
+			<div>
+				
+				<p><I>You can find below the expected goals estimated and the probabilites of the different results.</I></p>
+
+				{% for table in tables %}
+        		    		{{titles[loop.index]}}
+            				{{ table|safe }}
+				{% endfor %}
+
+				<form action="{{ url_for('html_predict_cust')}}" method="POST">
+					<label for="tactic-type">You can try another simulation :</label>
+					<table><tr><td><input type='text' name='HomeMidfield' placeholder='HomeMidfield' required/></td><td><input type='text' name='AwayMidfield' placeholder='AwayMidfield' required/></td></tr>
+					<tr><td><input type='text' name='HomeRightDef' placeholder='HomeRightDef' required/></td><td><input type='text' name='AwayRightDef' placeholder='AwayRightDef' required/></td></tr>
+					<tr><td><input type='text' name='HomeMidDef' placeholder='HomeMidDef' required/></td><td><input type='text' name='AwayMidDef' placeholder='AwayMidDef' required/></td></tr>
+					<tr><td><input type='text' name='HomeLeftDef' placeholder='HomeLeftDef' required/></td><td><input type='text' name='AwayLeftDef' placeholder='AwayLeftDef' required/></td></tr>
+					<tr><td><input type='text' name='HomeRightAtt' placeholder='HomeRightAtt' required/></td><td><input type='text' name='AwayRightAtt' placeholder='AwayRightAtt' required/></td></tr>
+					<tr><td><input type='text' name='HomeMidAtt' placeholder='HomeMidAtt' required/></td><td><input type='text' name='AwayMidAtt' placeholder='AwayMidAtt' required/></td></tr>
+					<tr><td><input type='text' name='HomeLeftAtt' placeholder='HomeLeftAtt' required/></td><td><input type='text' name='AwayLeftAtt' placeholder='AwayLeftAtt' required/></td></tr>
+					<tr><td><input type='text' name='HomeIndSPDef' placeholder='HomeIndSPDef' required/></td><td><input type='text' name='AwayIndSPDef' placeholder='AwayIndSPDef' required/></td></tr>
+					<tr><td><input type='text' name='HomeIndSPAtt' placeholder='HomeIndSPAtt' required/></td><td><input type='text' name='AwayIndSPAtt' placeholder='AwayIndSPAtt' required/></td></tr>
+					<tr><td><label for="tactic-type">Tactic Type Home :</label>
+						<select name="TacticHome" id="tactic-type" required>
+						<option value="">--Please choose an option--</option>
+						<option value="Normal">Normal</option>
+						<option value="Pressing">Pressing</option>
+						<option value="Counter-attacks">Counter-attacks</option>
+						<option value="Attack in the middle">Attack in the middle</option>
+						<option value="Attack on wings">Attack on wings</option>
+						<option value="Play creatively">Play creatively</option>
+						<option value="Long shots">Long shots</option></select></td>
+					<td><label for="tactic-type">Tactic Type Home :</label>
+						<select name="TacticAway" id="tactic-type" required>
+						<option value="">--Please choose an option--</option>
+						<option value="Normal">Normal</option>
+						<option value="Pressing">Pressing</option>
+						<option value="Counter-attacks">Counter-attacks</option>
+						<option value="Attack in the middle">Attack in the middle</option>
+						<option value="Attack on wings">Attack on wings</option>
+						<option value="Play creatively">Play creatively</option>
+						<option value="Long shots">Long shots</option></select></td></tr>
+
+					<tr><td><input type='text' name='TacticSkillHome' placeholder='TacticSkillHome' value='0' required/></td><td><input type='text' name='TacticSkillAway' placeholder='TacticSkillAway' value='0' required/></td></tr></table>
+					<button type="submit" class="btn btn-primary">Calculate</button>
+				</form>
+			</div>
+
+		<!-- Scripts -->
+			<script src="static/js/jquery.min.js"></script>
+			<script src="static/js/jquery.scrollex.min.js"></script>
+			<script src="static/js/jquery.scrolly.min.js"></script>
+			<script src="static/js/browser.min.js"></script>
+			<script src="static/js/breakpoints.min.js"></script>
+			<script src="static/js/util.js"></script>
+			<script src="static/js/main.js"></script>
+
+		
+	</body>
+</html>
