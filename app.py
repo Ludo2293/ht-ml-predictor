@@ -122,8 +122,12 @@ def html_predict():
                     Proba2=Proba2+Tab_probas.loc[k,l]
                 elif k==l:
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
-        Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
-            xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
+        try:
+            Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
+                xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
+        except:
+            Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,"0-0",
+                xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
     
         # Surprise ou non
         Liste_matchs['Surprise']=0
