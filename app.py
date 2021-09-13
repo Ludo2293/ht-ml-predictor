@@ -5,6 +5,7 @@ from scipy.stats import norm
 from joblib import load
 from flask import Flask, request,  render_template
 import os
+import re
 
 # Connexion à l'API Hattrick
 chpp = CHPP(os.getenv('consumer_key'),
@@ -137,12 +138,21 @@ def html_predict():
                          & (Liste_matchs['Home win'].str.split('%').str[0].astype(float)>=50),'Surprise']=1
         Liste_matchs=Liste_matchs.style.hide_index().hide_columns(['Surprise']).set_table_styles([{"selector": "th", "props": [("text-align", "center")]},
             {"selector": "td", "props": [("text-align", "center")]}]).apply(highlight_surprises,column=['Surprise'],axis=1).set_precision(2).render()
-        return Liste_matchs
+        liste_format_HT=re.sub('<style.*?</style>','',Liste_matchs,flags=re.DOTALL)
+        liste_format_HT=re.sub('<table.*?>','<table>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<th.*?>','<th>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<td.*?>','<td>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('>\n.*?<','><',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<table>.*?<tr>','<table><tr>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<tr>.*?<th>','<tr><th>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('</th>.*?<th>','</th><th>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=liste_format_HT.replace('<tbody>','').replace('</tbody>','').replace('</thead>','').replace("<","[").replace(">","]")
+        return Liste_matchs, liste_format_HT
     if request.method=='POST':
-        Liste_matchs=calcul_pred(int(request.form['MatchID']))
+        Liste_matchs, liste_format_HT=calcul_pred(int(request.form['MatchID']))
     else:
-        Liste_matchs=calcul_pred(int(request.args.get('MatchID')))
-    return render_template('match_pred.html',tables=[Liste_matchs],titles=['MATCH RESULT PROBABILITIES'])
+        Liste_matchs, liste_format_HT=calcul_pred(int(request.args.get('MatchID')))
+    return render_template('match_pred.html',tables=[Liste_matchs,liste_format_HT],titles=['MATCH RESULT PROBABILITIES','Copy the following code to share the result on Hattrick forum :'])
     
 # PREDICTEUR DE LIGUE
 @app.route('/predict_league', methods=("POST", "GET"))
@@ -307,16 +317,33 @@ def html_predict_league():
             .apply(lambda x:['font-weight:bold; background-color:red' if value<=-3 else '' for value in x],subset=['Points difference']).render()
         Liste_matchs=Liste_matchs.style.hide_index().hide_columns(['Surprise']).set_table_styles([{"selector": "th", "props": [("text-align", "center")]},
            {"selector": "td", "props": [("text-align", "center")]}]).apply(highlight_surprises,column=['Surprise'],axis=1).set_precision(2).render()
-        
-        return Liste_matchs, classement
+        liste_format_HT=re.sub('<style.*?</style>','',Liste_matchs,flags=re.DOTALL)
+        liste_format_HT=re.sub('<table.*?>','<table>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<th.*?>','<th>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<td.*?>','<td>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('>\n.*?<','><',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<table>.*?<tr>','<table><tr>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('<tr>.*?<th>','<tr><th>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=re.sub('</th>.*?<th>','</th><th>',liste_format_HT,flags=re.DOTALL)
+        liste_format_HT=liste_format_HT.replace('<tbody>','').replace('</tbody>','').replace('</thead>','').replace("<","[").replace(">","]")
+        class_format_HT=re.sub('<style.*?</style>','',classement,flags=re.DOTALL)
+        class_format_HT=re.sub('<table.*?>','<table>',class_format_HT,flags=re.DOTALL)
+        class_format_HT=re.sub('<th.*?>','<th>',class_format_HT,flags=re.DOTALL)
+        class_format_HT=re.sub('<td.*?>','<td>',class_format_HT,flags=re.DOTALL)
+        class_format_HT=re.sub('>\n.*?<','><',class_format_HT,flags=re.DOTALL)
+        class_format_HT=re.sub('<table>.*?<tr>','<table><tr>',class_format_HT,flags=re.DOTALL)
+        class_format_HT=re.sub('<tr>.*?<th>','<tr><th>',class_format_HT,flags=re.DOTALL)
+        class_format_HT=re.sub('</th>.*?<th>','</th><th>',class_format_HT,flags=re.DOTALL)
+        class_format_HT=class_format_HT.replace('<tbody>','').replace('</tbody>','').replace('</thead>','').replace("<","[").replace(">","]")
+        return Liste_matchs, classement, liste_format_HT, class_format_HT
     if request.method=='POST':
-        Liste_matchs, classement=calcul_pred_league(int(request.form['LeagueID']),int(request.form['Season']))
+        Liste_matchs, classement, liste_format_HT, class_format_HT=calcul_pred_league(int(request.form['LeagueID']),int(request.form['Season']))
     else:
         saison=int(request.args.get('Season'))
         ligue=int(request.args.get('LeagueID'))
-        Liste_matchs, classement=calcul_pred_league(ligue,saison)
-    return render_template('league_pred.html',tables=[classement,Liste_matchs],titles=['SIMULATED RANKING - What is the theorical ranking ?','COMPLETE MATCH LIST - Surprising results are highlighted in yellow'])
-
+        Liste_matchs, classement, liste_format_HT, class_format_HT =calcul_pred_league(ligue,saison)
+    return render_template('league_pred.html',tables=[classement,Liste_matchs,class_format_HT,liste_format_HT],titles=['SIMULATED RANKING - What is the theorical ranking ?','COMPLETE MATCH LIST - Surprising results are highlighted in yellow','Copy the following code to share the simulated rankings on Hattrick forum :','Copy the following code to share the match list on Hattrick forum :'])
+    
 
 # Prédicteur de match customisable
 @app.route('/predict_match_cust', methods=("POST", "GET"))
