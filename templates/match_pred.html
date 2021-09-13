@@ -27,7 +27,9 @@
 				If the result is "surprising" (a team with at least 50% probability to win did not win), it is highlighted in yellow.</I></p>
 
 				{% for table in tables %}
-        		    		{{titles[loop.index]}}
+					<b>{{ titles[loop.index-1]|safe }}</b>
+					<br>
+					<br>
             				{{ table|safe }}
 				{% endfor %}
 			</div>
