@@ -125,10 +125,10 @@ def html_predict():
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
         try:
             Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
-                xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
+                xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
         except:
             Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,"0-0",
-                xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
+                xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
     
         # Surprise ou non
         Liste_matchs['Surprise']=0
@@ -284,8 +284,8 @@ def html_predict_league():
                         ProbaN=ProbaN+Tab_probas.loc[k,l]
             Liste_matchs.loc[i]=[liste_matchs[i].home_team_name,liste_matchs[i].away_team_name,
                 str(liste_matchs[i].home_team_goals)+"-"+str(liste_matchs[i].away_team_goals),xG_dom[i],
-                xG_ext[i],str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",
-                str(round(Proba2*100,1))+"%",round(3*Proba1+ProbaN,2),round(3*Proba2+ProbaN,2),
+                xG_ext[i],str(int(round(Proba1*100,0)))+"%",str(int(round(ProbaN*100,0)))+"%",
+                str(int(round(Proba2*100,0)))+"%",round(3*Proba1+ProbaN,2),round(3*Proba2+ProbaN,2),
                 3*(liste_matchs[i].home_team_goals>liste_matchs[i].away_team_goals)+
                     1*(liste_matchs[i].home_team_goals==liste_matchs[i].away_team_goals),
                 3*(liste_matchs[i].away_team_goals>liste_matchs[i].home_team_goals)+
@@ -406,7 +406,7 @@ def html_predict_cust():
                     Proba2=Proba2+Tab_probas.loc[k,l]
                 elif k==l:
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
-        Liste_matchs.loc[0]=['Home Team','Away team',xG_dom,xG_ext,str(round(Proba1*100,1))+"%",str(round(ProbaN*100,1))+"%",str(round(Proba2*100,1))+"%"]
+        Liste_matchs.loc[0]=['Home Team','Away team',xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
     
         # Surprise ou non
         Liste_matchs=Liste_matchs.style.hide_index().set_table_styles([{"selector": "th", "props": [("text-align", "center")]},
