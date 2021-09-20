@@ -125,7 +125,7 @@ def html_predict():
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
         try:
             Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
-                xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(100-(int(round(Proba1*100,0))+int(round(ProbaN*100,0))+int(round(Proba2*100,0)))+int(round(ProbaN*100,0)))+int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
+                xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(100-(int(round(Proba1*100,0))+int(round(ProbaN*100,0))+int(round(Proba2*100,0)))+int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
         except:
             Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,"0-0",
                 xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(100-(int(round(Proba1*100,0))+int(round(ProbaN*100,0))+int(round(Proba2*100,0)))+int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
