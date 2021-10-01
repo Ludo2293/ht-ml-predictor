@@ -95,16 +95,16 @@
 									<p>Enter the match ratings manually to simulate the match ! Please input real match ratings as they appear in the match report (not hatstats ratings)</p>
 
 									<form action="{{ url_for('html_predict_cust')}}" method="POST">
-										<table><tr><td><input type='text' name='HomeMidfield' placeholder='HomeMidfield' required/></td><td><input type='text' name='AwayMidfield' placeholder='AwayMidfield' required/></td></tr>
-										<tr><td><input type='text' name='HomeRightDef' placeholder='HomeRightDef' required/></td><td><input type='text' name='AwayRightDef' placeholder='AwayRightDef' required/></td></tr>
-										<tr><td><input type='text' name='HomeMidDef' placeholder='HomeMidDef' required/></td><td><input type='text' name='AwayMidDef' placeholder='AwayMidDef' required/></td></tr>
-										<tr><td><input type='text' name='HomeLeftDef' placeholder='HomeLeftDef' required/></td><td><input type='text' name='AwayLeftDef' placeholder='AwayLeftDef' required/></td></tr>
-										<tr><td><input type='text' name='HomeRightAtt' placeholder='HomeRightAtt' required/></td><td><input type='text' name='AwayRightAtt' placeholder='AwayRightAtt' required/></td></tr>
-										<tr><td><input type='text' name='HomeMidAtt' placeholder='HomeMidAtt' required/></td><td><input type='text' name='AwayMidAtt' placeholder='AwayMidAtt' required/></td></tr>
-										<tr><td><input type='text' name='HomeLeftAtt' placeholder='HomeLeftAtt' required/></td><td><input type='text' name='AwayLeftAtt' placeholder='AwayLeftAtt' required/></td></tr>
-										<tr><td><input type='text' name='HomeIndSPDef' placeholder='HomeIndSPDef' required/></td><td><input type='text' name='AwayIndSPDef' placeholder='AwayIndSPDef' required></td></tr>
-										<tr><td><input type='text' name='HomeIndSPAtt' placeholder='HomeIndSPAtt' required/></td><td><input type='text' name='AwayIndSPAtt' placeholder='AwayIndSPAtt' required/></td></tr>
-										<tr><td><label for="tactic-type">Tactic Type/Skill Home :</label>
+										<table><tr><td width="200"><b>Midfield</td><td><input type='text' name='HomeMidfield' placeholder='Home' required/></td><td><input type='text' name='AwayMidfield' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>RightDef</b></td><td><input type='text' name='HomeRightDef' placeholder='Home' required/></td><td><input type='text' name='AwayRightDef' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>MidDef</b></td><td><input type='text' name='HomeMidDef' placeholder='Home' required/></td><td><input type='text' name='AwayMidDef' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>LeftDef</b></td><td><input type='text' name='HomeLeftDef' placeholder='Home' required/></td><td><input type='text' name='AwayLeftDef' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>RightAtt</b></td><td><input type='text' name='HomeRightAtt' placeholder='Home' required/></td><td><input type='text' name='AwayRightAtt' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>MidAtt</b></td><td><input type='text' name='HomeMidAtt' placeholder='Home' required/></td><td><input type='text' name='AwayMidAtt' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>LeftAtt</b></td><td><input type='text' name='HomeLeftAtt' placeholder='Home' required/></td><td><input type='text' name='AwayLeftAtt' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>IndSPDef</b></td><td><input type='text' name='HomeIndSPDef' placeholder='Home' required/></td><td><input type='text' name='AwayIndSPDef' placeholder='Away' required></td></tr>
+										<tr><td width="200"><b>IndSPAtt</b></td><td><input type='text' name='HomeIndSPAtt' placeholder='Home' required/></td><td><input type='text' name='AwayIndSPAtt' placeholder='Away' required/></td></tr>
+										<tr><td width="200"><b>Tactic Type</b></td><td>
 											<select name="TacticHome" id="tactic-type" required>
 											<option value="">--Please choose an option--</option>
 											<option value="Normal">Normal</option>
@@ -114,7 +114,7 @@
 											<option value="Attack on wings">Attack on wings</option>
 											<option value="Play creatively">Play creatively</option>
 											<option value="Long shots">Long shots</option></select></td>
-										<td><label for="tactic-type">Tactic Type/Skill Away :</label>
+										<td>
 											<select name="TacticAway" id="tactic-type" required>
 											<option value="">--Please choose an option--</option>
 											<option value="Normal">Normal</option>
@@ -125,7 +125,7 @@
 											<option value="Play creatively">Play creatively</option>
 											<option value="Long shots">Long shots</option></select></td></tr>
 
-										<tr><td><input type='text' name='TacticSkillHome' placeholder='TacticSkillHome' value='0' required/></td><td><input type='text' name='TacticSkillAway' placeholder='TacticSkillAway' value='0' required/></td></tr></table>
+										<tr><td width="200"><b>Tactic Skill</b></td><td><input type='text' name='TacticSkillHome' placeholder='TacticSkillHome' value='0' required/></td><td><input type='text' name='TacticSkillAway' placeholder='TacticSkillAway' value='0' required/></td></tr></table>
 																				 
 									<button type="submit" class="btn btn-primary">Calculate</button><br>
 									</form>
