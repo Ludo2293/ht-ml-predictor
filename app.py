@@ -271,7 +271,7 @@ def html_predict_league():
             for k in range(1,15):
                 Tab_probas.loc[k,0]=(norm.cdf(k+0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],.0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666)
                 -norm.cdf(k-0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],.0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666))*norm.cdf(0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666)
-            Proba1=0*0
+            Proba1=0
             ProbaN=0
             Proba2=0
             for k in range(0,15):
