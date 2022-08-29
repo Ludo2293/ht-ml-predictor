@@ -99,19 +99,19 @@ def html_predict():
         # Calcul des probabilités de victoire
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win'])
         Tab_probas=pd.DataFrame(columns=range(0,15))
-        Tab_probas.loc[0,0]=norm.cdf(0.5,.0023*xG_dom**3-.0431*xG_dom**2+1.2527*xG_dom-.4389,
-            max(0.9,.0032*xG_dom**3-.0662*xG_dom**2+.3828*xG_dom+.7108))*norm.cdf(0.5,.0023*xG_ext**3-.0431*xG_ext**2+1.2527*xG_ext-.4389,max(0.9,.0032*xG_ext**3-.0662*xG_ext**2+.3828*xG_ext+.7108))
+        Tab_probas.loc[0,0]=norm.cdf(0.5,(xG_dom>=.4)*(xG_dom<2)*(1.1314*xG_dom-.3065)+(xG_dom>=2)*xG_dom,
+            .0052*xG_dom**3-.0957*xG_dom**2+.5098*xG_dom+.5666)*norm.cdf(0.5,(xG_ext>=.4)*(xG_ext<2)*(1.1314*xG_ext-.3065)+(xG_ext>=2)*xG_ext,.0052*xG_ext**3-.0957*xG_ext**2+.5098*xG_ext+.5666)
         for l in range(1,15):
-            Tab_probas.loc[0,l]=norm.cdf(0.5,.0023*xG_dom**3-.0431*xG_dom**2+1.2527*xG_dom-.4389,
-                max(0.9,.0032*xG_dom**3-.0662*xG_dom**2+.3828*xG_dom+.7108))*(norm.cdf(l+0.5,.0023*xG_ext**3-.0431*xG_ext**2+1.2527*xG_ext-.4389,max(0.9,.0032*xG_ext**3-.0662*xG_ext**2+.3828*xG_ext+.7108))
-                -norm.cdf(l-0.5,.0023*xG_ext**3-.0431*xG_ext**2+1.2527*xG_ext-.4389,max(0.9,.0032*xG_ext**3-.0662*xG_ext**2+.3828*xG_ext+.7108)))
+            Tab_probas.loc[0,l]=norm.cdf(0.5,(xG_dom>=.4)*(xG_dom<2)*(1.1314*xG_dom-.3065)+(xG_dom>=2)*xG_dom,
+                .0052*xG_dom**3-.0957*xG_dom**2+.5098*xG_dom+.5666)*(norm.cdf(l+0.5,(xG_ext>=.4)*(xG_ext<2)*(1.1314*xG_ext-.3065)+(xG_ext>=2)*xG_ext,.0052*xG_ext**3-.0957*xG_ext**2+.5098*xG_ext+.5666)
+                -norm.cdf(l-0.5,(xG_ext>=.4)*(xG_ext<2)*(1.1314*xG_ext-.3065)+(xG_ext>=2)*xG_ext,.0052*xG_ext**3-.0957*xG_ext**2+.5098*xG_ext+.5666))
             for k in range(1,15):
-                Tab_probas.loc[k,l]=(norm.cdf(k+0.5,.0023*xG_dom**3-.0431*xG_dom**2+1.2527*xG_dom-.4389,max(0.9,.0032*xG_dom**3-.0662*xG_dom**2+.3828*xG_dom+.7108))
-                -norm.cdf(k-0.5,.0023*xG_dom**3-.0431*xG_dom**2+1.2527*xG_dom-.4389,max(0.9,.0032*xG_dom**3-.0662*xG_dom**2+.3828*xG_dom+.7108)))*(norm.cdf(l+0.5,.0023*xG_ext**3-.0431*xG_ext**2+1.2527*xG_ext-.4389,max(0.9,.0032*xG_ext**3-.0662*xG_ext**2+.3828*xG_ext+.7108))
-                -norm.cdf(l-0.5,.0023*xG_ext**3-.0431*xG_ext**2+1.2527*xG_ext-.4389,max(0.9,.0032*xG_ext**3-.0662*xG_ext**2+.3828*xG_ext+.7108)))
+                Tab_probas.loc[k,l]=(norm.cdf(k+0.5,(xG_dom>=.4)*(xG_dom<2)*(1.1314*xG_dom-.3065)+(xG_dom>=2)*xG_dom,.0052*xG_dom**3-.0957*xG_dom**2+.5098*xG_dom+.5666)
+                -norm.cdf(k-0.5,(xG_dom>=.4)*(xG_dom<2)*(1.1314*xG_dom-.3065)+(xG_dom>=2)*xG_dom,.0052*xG_dom**3-.0957*xG_dom**2+.5098*xG_dom+.5666))*(norm.cdf(l+0.5,(xG_ext>=.4)*(xG_ext<2)*(1.1314*xG_ext-.3065)+(xG_ext>=2)*xG_ext,.0052*xG_ext**3-.0957*xG_ext**2+.5098*xG_ext+.5666)
+                -norm.cdf(l-0.5,(xG_ext>=.4)*(xG_ext<2)*(1.1314*xG_ext-.3065)+(xG_ext>=2)*xG_ext,.0052*xG_ext**3-.0957*xG_ext**2+.5098*xG_ext+.5666))
         for k in range(1,15):
-            Tab_probas.loc[k,0]=(norm.cdf(k+0.5,.0023*xG_dom**3-.0431*xG_dom**2+1.2527*xG_dom-.4389,max(0.9,.0032*xG_dom**3-.0662*xG_dom**2+.3828*xG_dom+.7108))
-                -norm.cdf(k-0.5,.0023*xG_dom**3-.0431*xG_dom**2+1.2527*xG_dom-.4389,max(0.9,.0032*xG_dom**3-.0662*xG_dom**2+.3828*xG_dom+.7108)))*norm.cdf(0.5,.0023*xG_ext**3-.0431*xG_ext**2+1.2527*xG_ext-.4389,max(0.9,.0032*xG_ext**3-.0662*xG_ext**2+.3828*xG_ext+.7108))
+            Tab_probas.loc[k,0]=(norm.cdf(k+0.5,(xG_dom>=.4)*(xG_dom<2)*(1.1314*xG_dom-.3065)+(xG_dom>=2)*xG_dom,.0052*xG_dom**3-.0957*xG_dom**2+.5098*xG_dom+.5666)
+            -norm.cdf(k-0.5,(xG_dom>=.4)*(xG_dom<2)*(1.1314*xG_dom-.3065)+(xG_dom>=2)*xG_dom,.0052*xG_dom**3-.0957*xG_dom**2+.5098*xG_dom+.5666))*norm.cdf(0.5,(xG_ext>=.4)*(xG_ext<2)*(1.1314*xG_ext-.3065)+(xG_ext>=2)*xG_ext,.0052*xG_ext**3-.0957*xG_ext**2+.5098*xG_ext+.5666)
         Proba1=0
         ProbaN=0
         Proba2=0
@@ -258,19 +258,19 @@ def html_predict_league():
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win','Xpts Home','Xpts Away','Rpts Home','Rpts Away'])
         for i in range(0,nb_matchs):
             Tab_probas=pd.DataFrame(columns=range(0,15))
-            Tab_probas.loc[0,0]=norm.cdf(0.5,.0023*xG_dom[i]**3-.0431*xG_dom[i]**2+1.2527*xG_dom[i]-.4389,
-            max(0.9,.0032*xG_dom[i]**3-.0662*xG_dom[i]**2+.3828*xG_dom[i]+.7108))*norm.cdf(0.5,.0023*xG_ext[i]**3-.0431*xG_ext[i]**2+1.2527*xG_ext[i]-.4389,max(0.9,.0032*xG_ext[i]**3-.0662*xG_ext[i]**2+.3828*xG_ext[i]+.7108))
+            Tab_probas.loc[0,0]=norm.cdf(0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],
+            .0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666)*norm.cdf(0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666)
             for l in range(1,15):
-                Tab_probas.loc[0,l]=norm.cdf(0.5,.0023*xG_dom[i]**3-.0431*xG_dom[i]**2+1.2527*xG_dom[i]-.4389,
-                    max(0.9,.0032*xG_dom[i]**3-.0662*xG_dom[i]**2+.3828*xG_dom[i]+.7108))*(norm.cdf(l+0.5,.0023*xG_ext[i]**3-.0431*xG_ext[i]**2+1.2527*xG_ext[i]-.4389,max(0.9,.0032*xG_ext[i]**3-.0662*xG_ext[i]**2+.3828*xG_ext[i]+.7108))
-                    -norm.cdf(l-0.5,.0023*xG_ext[i]**3-.0431*xG_ext[i]**2+1.2527*xG_ext[i]-.4389,max(0.9,.0032*xG_ext[i]**3-.0662*xG_ext[i]**2+.3828*xG_ext[i]+.7108)))
+                Tab_probas.loc[0,l]=norm.cdf(0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],
+                    .0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666)*(norm.cdf(l+0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666)
+                    -norm.cdf(l-0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666))
                 for k in range(1,15):
-                    Tab_probas.loc[k,l]=(norm.cdf(k+0.5,.0023*xG_dom[i]**3-.0431*xG_dom[i]**2+1.2527*xG_dom[i]-.4389,max(0.9,.0032*xG_dom[i]**3-.0662*xG_dom[i]**2+.3828*xG_dom[i]+.7108))
-                    -norm.cdf(k-0.5,.0023*xG_dom[i]**3-.0431*xG_dom[i]**2+1.2527*xG_dom[i]-.4389,max(0.9,.0032*xG_dom[i]**3-.0662*xG_dom[i]**2+.3828*xG_dom[i]+.7108)))*(norm.cdf(l+0.5,.0023*xG_ext[i]**3-.0431*xG_ext[i]**2+1.2527*xG_ext[i]-.4389,max(0.9,.0032*xG_ext[i]**3-.0662*xG_ext[i]**2+.3828*xG_ext[i]+.7108))
-                    -norm.cdf(l-0.5,.0023*xG_ext[i]**3-.0431*xG_ext[i]**2+1.2527*xG_ext[i]-.4389,max(0.9,.0032*xG_ext[i]**3-.0662*xG_ext[i]**2+.3828*xG_ext[i]+.7108)))
+                    Tab_probas.loc[k,l]=(norm.cdf(k+0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],.0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666)
+                    -norm.cdf(k-0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],.0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666))*(norm.cdf(l+0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666)
+                    -norm.cdf(l-0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666))
             for k in range(1,15):
-                Tab_probas.loc[k,0]=(norm.cdf(k+0.5,.0023*xG_dom[i]**3-.0431*xG_dom[i]**2+1.2527*xG_dom[i]-.4389,max(0.9,.0032*xG_dom[i]**3-.0662*xG_dom[i]**2+.3828*xG_dom[i]+.7108))
-                    -norm.cdf(k-0.5,.0023*xG_dom[i]**3-.0431*xG_dom[i]**2+1.2527*xG_dom[i]-.4389,max(0.9,.0032*xG_dom[i]**3-.0662*xG_dom[i]**2+.3828*xG_dom[i]+.7108)))*norm.cdf(0.5,.0023*xG_ext[i]**3-.0431*xG_ext[i]**2+1.2527*xG_ext[i]-.4389,max(0.9,.0032*xG_ext[i]**3-.0662*xG_ext[i]**2+.3828*xG_ext[i]+.7108))
+                Tab_probas.loc[k,0]=(norm.cdf(k+0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],.0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666)
+                -norm.cdf(k-0.5,(xG_dom[i]>=.4)*(xG_dom[i]<2)*(1.1314*xG_dom[i]-.3065)+(xG_dom[i]>=2)*xG_dom[i],.0052*xG_dom[i]**3-.0957*xG_dom[i]**2+.5098*xG_dom[i]+.5666))*norm.cdf(0.5,(xG_ext[i]>=.4)*(xG_ext[i]<2)*(1.1314*xG_ext[i]-.3065)+(xG_ext[i]>=2)*xG_ext[i],.0052*xG_ext[i]**3-.0957*xG_ext[i]**2+.5098*xG_ext[i]+.5666)
             Proba1=0
             ProbaN=0
             Proba2=0
