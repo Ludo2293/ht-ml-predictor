@@ -5,4 +5,4 @@ pychpp==0.5.5
 scipy==1.6.2
 gunicorn
 lightgbm
-Werkzeug==2.2.2
+Werkzeug==3.1.3
