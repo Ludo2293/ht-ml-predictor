@@ -151,11 +151,11 @@ def html_predict():
 @app.route('/predict_league', methods=("POST", "GET"))
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
-        if num_saison==int(chpp.LeagueFixtures(ht_id=id_league).season):
+        if num_saison==int(chpp.leaguefixtures(ht_id=id_league).season):
             nb_matchs=min(4*int(chpp.league(ht_id=id_league).current_match_round)-4,56)
         else:
             nb_matchs=56
-        liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.LeagueFixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
+        liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.leaguefixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
         diff_buts=np.array([o.home_team_goals-o.away_team_goals for o in liste_matchs])
         # Repli défensif
         Pen_att_dom=[1 for x in range(0,nb_matchs)]
