@@ -155,7 +155,7 @@ def html_predict_league():
             nb_matchs=min(4*int(chpp.league(ht_id=id_league).current_match_round)-4,56)
         else:
             nb_matchs=56
-        liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.league_fixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
+        liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.LeagueFixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
         diff_buts=np.array([o.home_team_goals-o.away_team_goals for o in liste_matchs])
         # Repli défensif
         Pen_att_dom=[1 for x in range(0,nb_matchs)]
