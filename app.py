@@ -1,4 +1,4 @@
-from pychpp import CHPP
+from pychpp import CHPPBase
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
