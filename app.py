@@ -7,6 +7,7 @@ from joblib import load
 from flask import Flask, request,  render_template
 import os
 import re
+from inspect import signature
 
 # Connexion à l'API Hattrick
 chpp = CHPP(os.getenv('consumer_key'),
@@ -152,7 +153,7 @@ def html_predict():
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
         print(dir(CHPP))
-        print(chpp.league)
+        print(list(signature(chpp.league).parameters))
         if num_saison==int(chpp.xml_league_fixtures(ht_id=id_league).season):
             nb_matchs=min(4*int(chpp.league(ht_id=id_league).current_match_round)-4,56)
         else:
