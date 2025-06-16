@@ -8,7 +8,7 @@ import os
 import re
 
 # Connexion à l'API Hattrick
-chpp = CHPP(os.getenv('consumer_key'),
+chpp = CHPPBase(os.getenv('consumer_key'),
             os.getenv('consumer_secret'),
             os.getenv('access_token_key'),
             os.getenv('access_token_secret'))
