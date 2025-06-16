@@ -8,7 +8,6 @@ from flask import Flask, request,  render_template
 import os
 import re
 
-print(dir(CHPP))
 # Connexion à l'API Hattrick
 chpp = CHPP(os.getenv('consumer_key'),
             os.getenv('consumer_secret'),
@@ -152,6 +151,7 @@ def html_predict():
 @app.route('/predict_league', methods=("POST", "GET"))
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
+        print(dir(CHPP))
         if num_saison==int(chpp.leaguefixtures(ht_id=id_league).season):
             nb_matchs=min(4*int(chpp.league(ht_id=id_league).current_match_round)-4,56)
         else:
