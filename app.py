@@ -153,13 +153,13 @@ def html_predict():
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
         print(dir(CHPP))
-        print(dir(chpp.match(id_=748831366).home_team))
+        print(dir(chpp.match(id_=748831366).home_team.goals))
         if num_saison==int(chpp.xml_league_fixtures(id_=id_league).season):
             nb_matchs=min(4*int(chpp.league(id_=id_league).current_match_round)-4,56)
         else:
             nb_matchs=56
         liste_matchs=[chpp.match(id_=o.ht_id) for o in chpp.xml_league_fixtures(id_=id_league,season=num_saison).matches][:nb_matchs]
-        diff_buts=np.array([o.home_team_goals-o.away_team_goals for o in liste_matchs])
+        diff_buts=np.array([o.home_team.goals-o.away_team.goals for o in liste_matchs])
         # Repli défensif
         Pen_att_dom=[1 for x in range(0,nb_matchs)]
         Bon_def_dom=[1 for x in range(0,nb_matchs)]
