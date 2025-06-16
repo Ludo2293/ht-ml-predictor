@@ -8,6 +8,7 @@ from flask import Flask, request,  render_template
 import os
 import re
 
+print(dir(CHPP))
 # Connexion à l'API Hattrick
 chpp = CHPP(os.getenv('consumer_key'),
             os.getenv('consumer_secret'),
