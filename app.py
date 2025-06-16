@@ -153,9 +153,9 @@ def html_predict():
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
         print(dir(CHPP))
-        print(list(signature(chpp.league).parameters))
+        print(list(signature(chpp.match).parameters))
         if num_saison==int(chpp.xml_league_fixtures(ht_id=id_league).season):
-            nb_matchs=min(4*int(chpp.league(ht_id=id_league).current_match_round)-4,56)
+            nb_matchs=min(4*int(chpp.league(id_=id_league).current_match_round)-4,56)
         else:
             nb_matchs=56
         liste_matchs=[chpp.match(ht_id=o.ht_id) for o in chpp.xml_league_fixtures(ht_id=id_league,season=num_saison).matches][:nb_matchs]
