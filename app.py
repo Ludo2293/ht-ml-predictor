@@ -1,4 +1,5 @@
-from pychpp import CHPPBase
+from pychpp import CHPP
+from pychpp.chpp import CHPPBase
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
@@ -8,7 +9,7 @@ import os
 import re
 
 # Connexion à l'API Hattrick
-chpp = CHPPBase(os.getenv('consumer_key'),
+chpp = CHPP(os.getenv('consumer_key'),
             os.getenv('consumer_secret'),
             os.getenv('access_token_key'),
             os.getenv('access_token_secret'))
