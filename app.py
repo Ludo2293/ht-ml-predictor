@@ -72,7 +72,10 @@ def html_predict():
         Bon_def_dom=sum(a*b for a,b in zip(liste_db_def,liste_md))/90
         Pen_att_ext=sum(a*b for a,b in zip(liste_db_att_ext,liste_md))/90
         Bon_def_ext=sum(a*b for a,b in zip(liste_db_def_ext,liste_md))/90
-        print(dir(match_det.home_team))
+        print(match_det.home_team.tactic_skill)
+        print(match_det.home_team.tactic_type)
+        print(match_det.home_team.ratings.right_attack)
+        print(match_det.home_team.ratings.midfield)
         xG_dom=(match_det.home_team.ratings.midfield==1)*(diff_buts==5)*5+(match_det.home_team.ratings.midfield>1)*max(0.1,model.predict([[match_det.home_team.ratings.midfield**3/(match_det.home_team.ratings.midfield**3+match_det.away_team.ratings.midfield**3),
             .92*(match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.left_defense/Bon_def_ext)**3.5),
             .92*(match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.right_defense/Bon_def_ext)**3.5),
@@ -121,10 +124,10 @@ def html_predict():
                 elif k==l:
                     ProbaN=ProbaN+Tab_probas.loc[k,l]
         try:
-            Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
+            Liste_matchs.loc[0]=[match_det.home_team.name,match_det.away_team.name,str(match.goals[len(match.goals)-1]['home_goals'])+"-"+str(match.goals[len(match.goals)-1]['away_goals']),
                 xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(100-(int(round(Proba1*100,0))+int(round(ProbaN*100,0))+int(round(Proba2*100,0)))+int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
         except:
-            Liste_matchs.loc[0]=[match.home_team_name,match.away_team_name,"0-0",
+            Liste_matchs.loc[0]=[match_det.home_team.name,match_det.away_team.name,"0-0",
                 xG_dom,xG_ext,str(int(round(Proba1*100,0)))+"%",str(100-(int(round(Proba1*100,0))+int(round(ProbaN*100,0))+int(round(Proba2*100,0)))+int(round(ProbaN*100,0)))+"%",str(int(round(Proba2*100,0)))+"%"]
     
         # Surprise ou non
