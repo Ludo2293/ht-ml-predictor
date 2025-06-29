@@ -57,7 +57,7 @@ def html_predict():
         for i in range(0,len(match.goals)):
             liste_minutes.append(match.goals[i].minute)
             liste_hg.append(match.goals[i].home_goals_after)
-            liste_ag.append(match.goals[i].away_goals_after])
+            liste_ag.append(match.goals[i].away_goals_after)
         liste_minutes=[min(a,90) for a in liste_minutes]
         liste_db=[0]+[a-b for a,b in zip(liste_hg,liste_ag)]
         liste_db_att=[.91**(max(a,1)-1) for a in liste_db]
@@ -178,7 +178,7 @@ def html_predict_league():
             for i in range(0,len(match.goals)):
                 liste_minutes.append(match.goals[i].minute)
                 liste_hg.append(match.goals[i].home_goals_after)
-                liste_ag.append(match.goals[i].away_goals_after])
+                liste_ag.append(match.goals[i].away_goals_after)
             liste_minutes=[min(a,90) for a in liste_minutes]
             liste_db=[0]+[a-b for a,b in zip(liste_hg,liste_ag)]
             liste_db_att=[.91**(max(a,1)-1) for a in liste_db]
