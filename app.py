@@ -156,9 +156,12 @@ def html_predict_league():
         print(dir(chpp.match(id_=748831376)))
         #if num_saison==int(chpp.xml_league_fixtures(id_=id_league).season):
         #    nb_matchs=min(4*int(chpp.league(id_=id_league).current_match_round)-4,56)
-        #else:
-        #    nb_matchs=56
-        liste_matchs=[chpp.match(id_=o.id) for o in chpp.xml_league_fixtures(league_level_unit_id=id_league,season=num_saison).matches]#[:nb_matchs]
+        if num_saison==91:
+            nb_matchs=36
+        else:
+            nb_matchs=56
+        
+        liste_matchs=[chpp.match(id_=o.id) for o in chpp.xml_league_fixtures(league_level_unit_id=id_league,season=num_saison).matches][:nb_matchs]
         diff_buts=np.array([o.home_team.goals-o.away_team.goals for o in liste_matchs])
         # Repli défensif
         Pen_att_dom=[1 for x in range(0,nb_matchs)]
