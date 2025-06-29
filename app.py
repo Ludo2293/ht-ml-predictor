@@ -47,7 +47,7 @@ def html_predict():
         except:
             match = chpp.match(id_=id_init)
         # Estimation du Repli défensif
-        diff_buts=match.home_team_goals-match.away_team_goals
+        diff_buts=match.home_team.goals-match.away_team.goals
         # Application de la fonction de "neutralisation" du repli défensif
         ## Calcul du nombre de minutes avec N buts d'écart
         liste_minutes=[]
