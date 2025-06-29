@@ -174,6 +174,7 @@ def html_predict_league():
             liste_minutes=[]
             liste_hg=[]
             liste_ag=[]
+            print(match.goals[1])
             for i in range(0,len(match.goals)):
                 liste_minutes.append(match.goals[i]['minute'])
                 liste_hg.append(match.goals[i]['home_goals'])
