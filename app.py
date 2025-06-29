@@ -153,7 +153,7 @@ def html_predict():
 def html_predict_league():
     def calcul_pred_league(id_league,num_saison):
         print(dir(chpp))
-        print(dir(chpp.match(id_=748831376)))
+        print(dir(chpp.xml_match_details(id_=748831376)))
         #if num_saison==int(chpp.xml_league_fixtures(id_=id_league).season):
         #    nb_matchs=min(4*int(chpp.league(id_=id_league).current_match_round)-4,56)
         if num_saison==91:
