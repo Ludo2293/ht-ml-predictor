@@ -44,8 +44,10 @@ def html_predict():
     def calcul_pred(id_init):
         try:
             match = chpp.match(id_=id_init,source="htointegrated")
+            match_det = chpp.xml_match_details(match_id=id_init,source="htointegrated").match
         except:
             match = chpp.match(id_=id_init)
+            match_det = chpp.xml_match_details(match_id=id_init).match
         # Estimation du Repli défensif
         diff_buts=match.home_team.goals-match.away_team.goals
         # Application de la fonction de "neutralisation" du repli défensif
@@ -70,25 +72,25 @@ def html_predict():
         Bon_def_dom=sum(a*b for a,b in zip(liste_db_def,liste_md))/90
         Pen_att_ext=sum(a*b for a,b in zip(liste_db_att_ext,liste_md))/90
         Bon_def_ext=sum(a*b for a,b in zip(liste_db_def_ext,liste_md))/90
-        xG_dom=(match.home_team_rating_midfield==1)*(diff_buts==5)*5+(match.home_team_rating_midfield>1)*max(0.1,model.predict([[match.home_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
-            .92*(match.home_team_rating_right_att/Pen_att_dom)**3.5/((match.home_team_rating_right_att/Pen_att_dom)**3.5+(match.away_team_rating_left_def/Bon_def_ext)**3.5),
-            .92*(match.home_team_rating_left_att/Pen_att_dom)**3.5/((match.home_team_rating_left_att/Pen_att_dom)**3.5+(match.away_team_rating_right_def/Bon_def_ext)**3.5),
-            .92*(match.home_team_rating_mid_att/Pen_att_dom)**3.5/((match.home_team_rating_mid_att/Pen_att_dom)**3.5+(match.away_team_rating_mid_def/Bon_def_ext)**3.5),
-            .92*match.home_team_rating_ind_set_pieces_att**3.5/(match.home_team_rating_ind_set_pieces_att**3.5+match.away_team_rating_ind_set_pieces_def**3.5),
-            1*(match.home_team_tactic_type=='1')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='2')*match.home_team_tactic_skill,
-            1*(match.home_team_tactic_type=='3')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='4')*match.home_team_tactic_skill,
-            1*(match.home_team_tactic_type=='7')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='8')*match.home_team_tactic_skill,
-            1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill]])[0])
+        xG_dom=(match_det.home_team.ratings.midfield==1)*(diff_buts==5)*5+(match_det.home_team.ratings.midfield>1)*max(0.1,model.predict([[match_det.home_team.ratings.midfield**3/(match_det.home_team.ratings.midfield**3+match_det.away_team.ratings.midfield**3),
+            .92*(match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.left_defense/Bon_def_ext)**3.5),
+            .92*(match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.right_defense/Bon_def_ext)**3.5),
+            .92*(match_det.home_team.ratings.mid_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.mid_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.mid_defense/Bon_def_ext)**3.5),
+            .92*match_det.home_team.ratings.indirect_set_pieces_attack**3.5/(match_det.home_team.ratings.indirect_set_pieces_attack**3.5+match_det.away_team.ratings.indirect_set_pieces_defense**3.5),
+            1*(match_det.home_team.tactic_type=='1')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='2')*match_det.home_team.tactic_skill,
+            1*(match_det.home_team.tactic_type=='3')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='4')*match_det.home_team.tactic_skill,
+            1*(match_det.home_team.tactic_type=='7')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='8')*match_det.home_team.tactic_skill,
+            1*(match_det.away_team.tactic_type=='1')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='7')*match_det.away_team.tactic_skill]])[0])
         # Extérieur
-        xG_ext=(match.away_team_rating_midfield==1)*(diff_buts==-5)*5+(match.away_team_rating_midfield>1)*max(0.1,model.predict([[match.away_team_rating_midfield**3/(match.home_team_rating_midfield**3+match.away_team_rating_midfield**3),
-            .92*(match.away_team_rating_right_att/Pen_att_ext)**3.5/((match.away_team_rating_right_att/Pen_att_ext)**3.5+(match.home_team_rating_left_def/Bon_def_dom)**3.5),
-            .92*(match.away_team_rating_left_att/Pen_att_ext)**3.5/((match.away_team_rating_left_att/Pen_att_ext)**3.5+(match.home_team_rating_right_def/Bon_def_dom)**3.5),
-            .92*(match.away_team_rating_mid_att/Pen_att_ext)**3.5/((match.away_team_rating_mid_att/Pen_att_ext)**3.5+(match.home_team_rating_mid_def/Bon_def_dom)**3.5),
-            .92*match.away_team_rating_ind_set_pieces_att**3.5/(match.away_team_rating_ind_set_pieces_att**3.5+match.home_team_rating_ind_set_pieces_def**3.5),
-            1*(match.away_team_tactic_type=='1')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='2')*match.away_team_tactic_skill,
-            1*(match.away_team_tactic_type=='3')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='4')*match.away_team_tactic_skill,
-            1*(match.away_team_tactic_type=='7')*match.away_team_tactic_skill,1*(match.away_team_tactic_type=='8')*match.away_team_tactic_skill,
-            1*(match.home_team_tactic_type=='1')*match.home_team_tactic_skill,1*(match.home_team_tactic_type=='7')*match.home_team_tactic_skill]])[0])
+        xG_ext=(match_det.away_team.ratings.midfield==1)*(diff_buts==-5)*5+(match_det.away_team.ratings.midfield>1)*max(0.1,model.predict([[match_det.away_team.ratings.midfield**3/(match_det.home_team.ratings.midfield**3+match_det.away_team.ratings.midfield**3),
+            .92*(match_det.away_team.ratings.right_attack/Pen_att_ext)**3.5/((match_det.away_team.ratings.right_attack/Pen_att_ext)**3.5+(match_det.home_team.ratings.left_defense/Bon_def_dom)**3.5),
+            .92*(match_det.away_team.ratings.left_attack/Pen_att_ext)**3.5/((match_det.away_team.ratings.left_attack/Pen_att_ext)**3.5+(match_det.home_team.ratings.right_defense/Bon_def_dom)**3.5),
+            .92*(match_det.away_team.ratings.mid_attack/Pen_att_ext)**3.5/((match_det.away_team.ratings.mid_attack/Pen_att_ext)**3.5+(match_det.home_team.ratings.mid_defense/Bon_def_dom)**3.5),
+            .92*match_det.away_team.ratings.indirect_set_pieces_attack**3.5/(match_det.away_team_ratings.indirect_set_pieces_attack**3.5+match_det.home_team.ratings.indirect_set_pieces_defense**3.5),
+            1*(match_det.away_team.tactic_type=='1')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='2')*match_det.away_team.tactic_skill,
+            1*(match_det.away_team.tactic_type=='3')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='4')*match_det.away_team.tactic_skill,
+            1*(match_det.away_team.tactic_type=='7')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='8')*match_det.away_team.tactic_skill,
+            1*(match_det.home_team.tactic_type=='1')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='7')*match_det.home_team.tactic_skill]])[0])
         
         # Calcul des probabilités de victoire
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win'])
