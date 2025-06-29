@@ -53,6 +53,7 @@ def html_predict():
         liste_minutes=[]
         liste_hg=[]
         liste_ag=[]
+        print("Match goals :", match.goals)
         for i in range(0,len(match.goals)):
             liste_minutes.append(match.goals[i]['minute'])
             liste_hg.append(match.goals[i]['home_goals'])
