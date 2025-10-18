@@ -85,20 +85,20 @@ def html_predict():
             .92*(match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.right_defense/Bon_def_ext)**3.5),
             .92*(match_det.home_team.ratings.mid_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.mid_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.mid_defense/Bon_def_ext)**3.5),
             .92*match_det.home_team.ratings.indirect_set_pieces_attack**3.5/(match_det.home_team.ratings.indirect_set_pieces_attack**3.5+match_det.away_team.ratings.indirect_set_pieces_defense**3.5),
-            1*(match_det.home_team.tactic_type=='1')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='2')*match_det.home_team.tactic_skill,
-            1*(match_det.home_team.tactic_type=='3')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='4')*match_det.home_team.tactic_skill,
-            1*(match_det.home_team.tactic_type=='7')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='8')*match_det.home_team.tactic_skill,
-            1*(match_det.away_team.tactic_type=='1')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='7')*match_det.away_team.tactic_skill]])[0])
+            1*(match_det.home_team.tactic_type==1)*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type==2)*match_det.home_team.tactic_skill,
+            1*(match_det.home_team.tactic_type==3)*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type==4)*match_det.home_team.tactic_skill,
+            1*(match_det.home_team.tactic_type==7)*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type==8)*match_det.home_team.tactic_skill,
+            1*(match_det.away_team.tactic_type==1)*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type==7)*match_det.away_team.tactic_skill]])[0])
         # Extérieur
         xG_ext=(match_det.away_team.ratings.midfield==1)*(diff_buts==-5)*5+(match_det.away_team.ratings.midfield>1)*max(0.1,model.predict([[match_det.away_team.ratings.midfield**3/(match_det.home_team.ratings.midfield**3+match_det.away_team.ratings.midfield**3),
             .92*(match_det.away_team.ratings.right_attack/Pen_att_ext)**3.5/((match_det.away_team.ratings.right_attack/Pen_att_ext)**3.5+(match_det.home_team.ratings.left_defense/Bon_def_dom)**3.5),
             .92*(match_det.away_team.ratings.left_attack/Pen_att_ext)**3.5/((match_det.away_team.ratings.left_attack/Pen_att_ext)**3.5+(match_det.home_team.ratings.right_defense/Bon_def_dom)**3.5),
             .92*(match_det.away_team.ratings.mid_attack/Pen_att_ext)**3.5/((match_det.away_team.ratings.mid_attack/Pen_att_ext)**3.5+(match_det.home_team.ratings.mid_defense/Bon_def_dom)**3.5),
             .92*match_det.away_team.ratings.indirect_set_pieces_attack**3.5/(match_det.away_team_ratings.indirect_set_pieces_attack**3.5+match_det.home_team.ratings.indirect_set_pieces_defense**3.5),
-            1*(match_det.away_team.tactic_type=='1')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='2')*match_det.away_team.tactic_skill,
-            1*(match_det.away_team.tactic_type=='3')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='4')*match_det.away_team.tactic_skill,
-            1*(match_det.away_team.tactic_type=='7')*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type=='8')*match_det.away_team.tactic_skill,
-            1*(match_det.home_team.tactic_type=='1')*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type=='7')*match_det.home_team.tactic_skill]])[0])
+            1*(match_det.away_team.tactic_type==1)*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type==2)*match_det.away_team.tactic_skill,
+            1*(match_det.away_team.tactic_type==3)*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type==4)*match_det.away_team.tactic_skill,
+            1*(match_det.away_team.tactic_type==7)*match_det.away_team.tactic_skill,1*(match_det.away_team.tactic_type==8)*match_det.away_team.tactic_skill,
+            1*(match_det.home_team.tactic_type==1)*match_det.home_team.tactic_skill,1*(match_det.home_team.tactic_type==7)*match_det.home_team.tactic_skill]])[0])
         
         # Calcul des probabilités de victoire
         Liste_matchs=pd.DataFrame(columns=['Home Team','Away Team','Score','xG Home','xG Away','Home win','Draw','Away win'])
@@ -417,6 +417,7 @@ def html_predict_cust():
 
 if __name__ == '__main__':
     app.run()
+
 
 
 
