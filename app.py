@@ -72,14 +72,14 @@ def html_predict():
         Bon_def_dom=sum(a*b for a,b in zip(liste_db_def,liste_md))/90
         Pen_att_ext=sum(a*b for a,b in zip(liste_db_att_ext,liste_md))/90
         Bon_def_ext=sum(a*b for a,b in zip(liste_db_def_ext,liste_md))/90
-        print(match_det.home_team.tactic_skill)
-        print(match_det.home_team.tactic_type)
-        print(match_det.home_team.ratings.right_attack)
         print(match_det.home_team.ratings.midfield)
-        print(match_det.away_team.tactic_skill)
-        print(match_det.home_team.ratings.indirect_set_pieces_attack)
-        print(match_det.away_team.ratings.indirect_set_pieces_defense)
         print(match_det.away_team.ratings.midfield)
+        print(match_det.home_team.ratings.right_attack)
+        print(match_det.home_team.ratings.left_attack)
+        print(match_det.home_team.ratings.mid_attack)
+        print(match_det.away_team.ratings.left_defense)
+        print(match_det.away_team.ratings.right_defense)
+        print(match_det.away_team.ratings.mid_defense)
         xG_dom=(match_det.home_team.ratings.midfield==1)*(diff_buts==5)*5+(match_det.home_team.ratings.midfield>1)*max(0.1,model.predict([[match_det.home_team.ratings.midfield**3/(match_det.home_team.ratings.midfield**3+match_det.away_team.ratings.midfield**3),
             .92*(match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.left_defense/Bon_def_ext)**3.5),
             .92*(match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.left_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.right_defense/Bon_def_ext)**3.5),
@@ -417,6 +417,7 @@ def html_predict_cust():
 
 if __name__ == '__main__':
     app.run()
+
 
 
 
