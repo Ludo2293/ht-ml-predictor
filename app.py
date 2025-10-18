@@ -77,8 +77,8 @@ def html_predict():
         print(match_det.home_team.ratings.right_attack)
         print(match_det.home_team.ratings.midfield)
         print(match_det.away_team.tactic_skill)
-        print(type(match_det.away_team.tactic_type))
-        print(match_det.away_team.ratings.right_attack)
+        print(match_det.home_team.ratings.indirect_set_pieces_attack)
+        print(match_det.away_team.ratings.indirect_set_pieces_defense)
         print(match_det.away_team.ratings.midfield)
         xG_dom=(match_det.home_team.ratings.midfield==1)*(diff_buts==5)*5+(match_det.home_team.ratings.midfield>1)*max(0.1,model.predict([[match_det.home_team.ratings.midfield**3/(match_det.home_team.ratings.midfield**3+match_det.away_team.ratings.midfield**3),
             .92*(match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5/((match_det.home_team.ratings.right_attack/Pen_att_dom)**3.5+(match_det.away_team.ratings.left_defense/Bon_def_ext)**3.5),
@@ -417,6 +417,7 @@ def html_predict_cust():
 
 if __name__ == '__main__':
     app.run()
+
 
 
 
